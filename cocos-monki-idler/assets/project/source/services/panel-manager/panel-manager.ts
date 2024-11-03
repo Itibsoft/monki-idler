@@ -1,10 +1,8 @@
 import {IPanelController, IPanelControllerProcessor} from "./abstracts/panel-controller-base.ts";
 import {PanelDispatcher} from "./panel-dispatcher.ts";
 import {PanelBase} from "./abstracts/panel-base.ts";
-import {AssetsBundle} from "../asset-bundle-manager";
-import {instantiate} from "cc";
 import {PanelFactory} from "./factories/panel-factory.ts";
-import {IService, ServiceType} from "../services.ts";
+import {IService, Services, ServiceType} from "../services.ts";
 
 export interface IPanelManagerProcessor {
     open(controller: IPanelController, panel: PanelBase): Promise<void>;
@@ -27,14 +25,14 @@ export class PanelManager implements IPanelManager, IPanelManagerProcessor {
     public panelDispatcher: PanelDispatcher;
 
     private _cachedPanelControllers: Map<string, IPanelController> = new Map<string, IPanelController>();
-    private readonly _uiBundle: AssetsBundle;
 
     private readonly _panelFactory: PanelFactory;
 
-    public constructor(bundle: AssetsBundle) {
-        this._uiBundle = bundle;
+    public constructor(dispatcher: PanelDispatcher) {
+        this.panelDispatcher = dispatcher;
+        this._panelFactory = new PanelFactory();
 
-        this._panelFactory = new PanelFactory(bundle);
+        Services.add(this);
     }
 
     public async open(controller: IPanelControllerProcessor, panel: PanelBase): Promise<void> {
@@ -51,36 +49,15 @@ export class PanelManager implements IPanelManager, IPanelManagerProcessor {
 
     public async release(controller: IPanelControllerProcessor, panel: PanelBase): Promise<void> {
         await controller.onUnload();
-        this._cachedPanelControllers.delete(panel.meta.AssetPath);
+        this._cachedPanelControllers.delete(panel.meta.asset_path);
         this.panelDispatcher.remove(panel);
     }
-
-    /*public async CreatePanelDispatcher(): Promise<void> {
-        const panelDispatcherPrefab = await this._uiBundle?.loadPrefab("panel-dispatcher");
-
-        if (panelDispatcherPrefab === undefined) {
-            console.error("Not found panel_dispatcher in _uiBundle");
-            return;
-        }
-
-        const node = instantiate(panelDispatcherPrefab);
-
-        const panelDispatcher = node.getComponent("PanelDispatcher") as PanelDispatcher;
-
-        if (Application.canvas === undefined || Application.canvas.uiContainer === undefined) {
-            console.error("Root canvas in undefined");
-            return;
-        }
-
-        panelDispatcher.node.setParent(Application.canvas.uiContainer);
-        this.panelDispatcher = panelDispatcher;
-    }*/
 
     public async LoadPanel<TPanelController extends IPanelController>(constructor: Constructor<TPanelController>): Promise<TPanelController> {
         const controller = new constructor();
 
-        if (this._cachedPanelControllers.has(controller.meta.AssetPath)) {
-            return this._cachedPanelControllers.get(controller.meta.AssetPath) as TPanelController;
+        if (this._cachedPanelControllers.has(controller.meta.asset_path)) {
+            return this._cachedPanelControllers.get(controller.meta.asset_path) as TPanelController;
         }
 
         const processor = controller as IPanelControllerProcessor;
@@ -93,7 +70,7 @@ export class PanelManager implements IPanelManager, IPanelManagerProcessor {
 
         this.panelDispatcher.cache(panel);
 
-        this._cachedPanelControllers.set(controller.meta.AssetPath, controller);
+        this._cachedPanelControllers.set(controller.meta.asset_path, controller);
 
         return controller;
     }

@@ -1,4 +1,4 @@
-export enum PanelType {
+export enum PANEL_TYPE {
     OVERLAY,
     WINDOW
 }

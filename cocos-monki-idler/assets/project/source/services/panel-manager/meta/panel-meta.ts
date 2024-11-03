@@ -1,7 +1,8 @@
-import {PanelType} from "../enums/panel-type.ts";
+import {PANEL_TYPE} from "../enums/panel-type.ts";
 
 export type PanelMeta = {
-    Type: PanelType;
-    Order: number;
-    AssetPath: string;
+    type: PANEL_TYPE;
+    order: number;
+    asset_path: string;
+    bundle: string
 }

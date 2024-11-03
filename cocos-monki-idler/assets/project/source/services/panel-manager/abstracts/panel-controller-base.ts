@@ -6,6 +6,7 @@ import {Button} from 'cc';
 
 export interface IPanelController extends IPanelControllerProcessor {
     meta: PanelMeta;
+
     open(): void;
 
     close(): void;

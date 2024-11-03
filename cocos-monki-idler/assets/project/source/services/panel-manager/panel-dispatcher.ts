@@ -1,6 +1,6 @@
 import {_decorator, Component, Node} from "cc";
 
-import {PanelType} from "./enums/panel-type.ts";
+import {PANEL_TYPE} from "./enums/panel-type.ts";
 import {PanelBase} from "./abstracts/panel-base.ts";
 import {PANEL_STATE} from "./enums/panel-state.ts";
 
@@ -31,9 +31,9 @@ export class PanelDispatcher extends Component {
         if (isOpen) {
             panel.setActive(true);
 
-            if (panel.meta.Type == PanelType.WINDOW) {
+            if (panel.meta.type == PANEL_TYPE.WINDOW) {
                 content = this.windowContent;
-            } else if (panel.meta.Type == PanelType.OVERLAY) {
+            } else if (panel.meta.type == PANEL_TYPE.OVERLAY) {
                 content = this.overlayContent;
             }
         } else {
@@ -52,7 +52,7 @@ export class PanelDispatcher extends Component {
             let panelBaseA = childA.getComponent("PanelBase") as PanelBase;
             let panelBaseB = childB.getComponent("PanelBase") as PanelBase;
 
-            return panelBaseA.meta.Order - panelBaseB.meta.Order;
+            return panelBaseA.meta.order - panelBaseB.meta.order;
         });
 
         // for (let index = 0; index < panels.length; index++) {
