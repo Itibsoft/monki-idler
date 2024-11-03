@@ -1,4 +1,5 @@
 export enum BUNDLES {
     LOADER = "loader",
-    SHARED = "shared"
+    SHARED = "shared",
+    CORE = "core"
 }
