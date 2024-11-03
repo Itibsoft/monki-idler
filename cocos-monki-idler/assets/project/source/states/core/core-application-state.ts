@@ -17,14 +17,17 @@ export class CoreApplicationState extends ApplicationState {
     }
 
     public async enterAsync(): Promise<void> {
-        const location = new Location();
-
-        await location.loadAsync();
-
-
         this._hudPanelController = await this._panelManager.LoadPanel(HudPanelController);
 
         this._hudPanelController.open();
+
+        const location = new Location();
+
+        const height =  this._hudPanelController.getNarrativeBlockHeight();
+
+        await location.loadAsync({
+            hud_height: height
+        });
     }
     public async exitAsync(): Promise<void> {
         this._hudPanelController.release();
