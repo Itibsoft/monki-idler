@@ -1,6 +1,7 @@
 import {APPLICATION_STATE_TYPE, ApplicationState} from "../../application/application-state.ts";
 import {HudPanelController} from "./hud/hud-panel-controller.ts";
 import {PanelManager, Services, ServiceType} from "../../services";
+import {Location} from "./location/location.ts";
 
 export class CoreApplicationState extends ApplicationState {
     public type: APPLICATION_STATE_TYPE = APPLICATION_STATE_TYPE.CORE;
@@ -16,6 +17,11 @@ export class CoreApplicationState extends ApplicationState {
     }
 
     public async enterAsync(): Promise<void> {
+        const location = new Location();
+
+        await location.loadAsync();
+
+
         this._hudPanelController = await this._panelManager.LoadPanel(HudPanelController);
 
         this._hudPanelController.open();
