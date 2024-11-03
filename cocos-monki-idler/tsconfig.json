@@ -1,0 +1,26 @@
+{
+  /* Base configuration. Do not edit this field. */
+  "extends": "./temp/tsconfig.cocos.json",
+  /* Add your custom configuration here. */
+  "compilerOptions": {
+    "strict": false,
+    "target": "ES2020",
+    "lib": [
+      "es6",
+      "DOM"
+    ],
+    "types": ["jest"], // Указываем, что хотим использовать типы Jest
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "paths": {
+      "*": [
+        "./*"
+      ]
+    },
+    "strictNullChecks": true,
+    "noImplicitAny": true
+  }
+}
