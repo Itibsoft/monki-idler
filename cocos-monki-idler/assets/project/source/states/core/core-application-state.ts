@@ -3,6 +3,7 @@ import {HudPanelController} from "./hud/hud-panel-controller.ts";
 import {PanelManager, Services, ServiceType} from "../../services";
 import {Location} from "./location/location.ts";
 import {BehaviorSubject} from "../../utils/behaviour-subject.ts";
+import {StatsController} from "./auto-battler/StatsController.ts";
 
 export class CoreConfig {
     public static readonly locationSpeed: BehaviorSubject<number> = new BehaviorSubject<number>(350);
@@ -37,6 +38,8 @@ export class CoreApplicationState extends ApplicationState {
             location_prefab: "prefabs/forest",
             location_bundle: "forest-location"
         });
+
+        await new StatsController().initialize();
     }
     public async exitAsync(): Promise<void> {
         this._hudPanelController.release();
