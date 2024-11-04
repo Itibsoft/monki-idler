@@ -4,6 +4,7 @@ import {PanelManager, Services, ServiceType} from "../../services";
 import {Location} from "./location/location.ts";
 import {BehaviorSubject} from "../../utils/behaviour-subject.ts";
 import {StatsController} from "./auto-battler/StatsController.ts";
+import {NarrativeController} from "./narrative/narrative-controller.ts";
 
 export class CoreConfig {
     public static readonly locationSpeed: BehaviorSubject<number> = new BehaviorSubject<number>(350);
@@ -39,7 +40,13 @@ export class CoreApplicationState extends ApplicationState {
             location_bundle: "forest-location"
         });
 
-        await new StatsController().initialize();
+        const stats_controller = new StatsController();
+        const narrative_controller = new NarrativeController();
+
+        await stats_controller.initialize();
+        await narrative_controller.initialize();
+
+
     }
     public async exitAsync(): Promise<void> {
         this._hudPanelController.release();
