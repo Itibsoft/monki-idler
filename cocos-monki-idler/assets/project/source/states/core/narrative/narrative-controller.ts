@@ -19,7 +19,7 @@ export interface INarrativeBlockDefault extends INarrativeBlockInfo {
 }
 
 export interface INarrativeBlockBattle extends INarrativeBlockInfo {
-    
+
 }
 
 export const NarrativeBlocks: INarrativeBlockInfo[] = [
