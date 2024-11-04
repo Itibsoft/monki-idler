@@ -39,6 +39,11 @@ export class StatsEditor extends Component {
     public setup(player_stats: IStat[], enemy_stats: IStat[]): void {
         this._playerStats = player_stats;
         this._enemyStats = enemy_stats;
+
+        this.enemyStatsSprite.color = new Color().fromHEX(GRAY);
+        this.playerStatsSprite.color = new Color().fromHEX(GREEN);
+
+        this.setStats(this._playerStats);
     }
 
     private setStats(stats: IStat[]): void {

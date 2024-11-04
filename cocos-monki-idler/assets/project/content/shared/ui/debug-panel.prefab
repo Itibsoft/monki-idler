@@ -1356,7 +1356,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "BACKGROUNDS",
+    "_string": "Игровой задник",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
@@ -1740,7 +1740,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "STOP",
+    "_string": "Стоп",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
@@ -2194,7 +2194,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "START",
+    "_string": "Старт",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
@@ -2648,7 +2648,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "SPEED:",
+    "_string": "Скорость: ",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
@@ -2781,7 +2781,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 90,
+      "x": 115,
       "y": 0,
       "z": 0
     },
@@ -2834,7 +2834,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -428,
+      "x": -403,
       "y": 30,
       "z": 0
     },
@@ -2875,7 +2875,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 858,
+      "width": 808,
       "height": 60
     },
     "_anchorPoint": {
@@ -3032,7 +3032,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -410,
+      "x": -385,
       "y": 30,
       "z": 0
     },
@@ -3073,7 +3073,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 820,
+      "width": 770,
       "height": 60
     },
     "_anchorPoint": {
@@ -3218,7 +3218,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 860,
+      "width": 810,
       "height": 60
     },
     "_anchorPoint": {
@@ -3329,7 +3329,7 @@
     },
     "_alignFlags": 45,
     "_target": null,
-    "_left": 200,
+    "_left": 250,
     "_right": 20,
     "_top": 20,
     "_bottom": 20,
@@ -3828,7 +3828,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "STATS",
+    "_string": "Статы",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
@@ -4332,7 +4332,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "Player",
+    "_string": "Игрок",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
@@ -4743,7 +4743,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "Enemy",
+    "_string": "Враг",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
