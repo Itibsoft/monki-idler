@@ -28,11 +28,6 @@ export interface IStat {
     value: BehaviorSubject<number>
 }
 
-export enum CHARACTER_ANIMATION_TYPE {
-    IDLE = "idle_1",
-    WALK = "walk"
-}
-
 export class CharacterModel {
     public readonly stats: IStat[];
 
@@ -44,17 +39,6 @@ export class CharacterModel {
         return this.stats
             .find(stat => stat.category == category && stat.type == type)
             ?.value;
-    }
-
-    public attack(opponent: CharacterModel): void {
-        const attackValue = this.getStat(STAT_CATEGORY.ATTACK, STAT_BASE_TYPE.ATTACK)?.value || 0;
-        const criticalHitChance = this.getStat(STAT_CATEGORY.ATTACK, STAT_ATTACK_TYPE.CRIT)?.value || 0;
-
-        const isCriticalHit = Math.random() < (criticalHitChance / 100);
-        const damage = isCriticalHit ? attackValue * 2 : attackValue;
-
-        console.log(`Атака: ${this.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.ATTACK)?.value} (Критический удар: ${isCriticalHit})`);
-        opponent.takeDamage(damage);
     }
 
     public takeDamage(damage: number): void {

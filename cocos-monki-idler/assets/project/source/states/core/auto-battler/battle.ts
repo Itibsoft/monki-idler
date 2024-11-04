@@ -1,25 +1,28 @@
 import {CharacterModel} from "./character-model.ts";
+import {CharacterViewModel} from "./character-view-model.ts";
 
 export class Battle {
-    public readonly characterA: CharacterModel;
-    public readonly characterB: CharacterModel;
+    public readonly characterA: CharacterViewModel;
+    public readonly characterB: CharacterViewModel;
 
-    public constructor(characterA: CharacterModel, characterB: CharacterModel) {
+    public constructor(characterA: CharacterViewModel, characterB: CharacterViewModel) {
         this.characterA = characterA;
         this.characterB = characterB;
     }
 
-    public start(): void {
+    public async startAsync(): Promise<void> {
         while (this.characterA.isAlive() && this.characterB.isAlive()) {
-            this.round();
+            await this.round();
         }
+
         this.declareWinner();
     }
 
-    private round(): void {
-        this.characterA.attack(this.characterB);
+    private async round(): Promise<void> {
+        await this.characterA.attackAsync(this.characterB);
+
         if (this.characterB.isAlive()) {
-            this.characterB.attack(this.characterA);
+            await this.characterB.attackAsync(this.characterA);
         }
     }
 

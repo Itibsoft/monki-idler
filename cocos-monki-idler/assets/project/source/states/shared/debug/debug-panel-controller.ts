@@ -2,7 +2,7 @@ import { Button, EditBox } from "cc";
 import {PANEL_TYPE, PanelControllerBase, PanelMeta} from "../../../services";
 import {DebugPanel} from "./debug-panel.ts";
 import {CoreConfig} from "../../core/core-application-state.ts";
-import {CharacterModel} from "../../core/auto-battler/character-model.ts";
+import {CharacterModel, IStat} from "../../core/auto-battler/character-model.ts";
 
 export class DebugPanelController extends PanelControllerBase<DebugPanel> {
     public readonly meta: PanelMeta = {
@@ -47,8 +47,8 @@ export class DebugPanelController extends PanelControllerBase<DebugPanel> {
         return super.initialize();
     }
 
-    public setupStats(character_1: CharacterModel, character_2: CharacterModel): void {
-        this.panel.statsEditor.setup(character_1.stats, character_2.stats);
+    public setupStats(character_1_stats: IStat[], character_2_stats: IStat[]): void {
+        this.panel.statsEditor.setup(character_1_stats, character_2_stats);
     }
 
     private onClick(): void {

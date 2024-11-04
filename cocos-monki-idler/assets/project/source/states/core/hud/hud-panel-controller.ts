@@ -14,10 +14,6 @@ export class HudPanelController extends PanelControllerBase<HudPanel> {
         super();
     }
 
-    public getNarrativeBlockHeight(): number {
-        return this.panel.narrativeBlockTransform.contentSize.y;
-    }
-
     public getNarrativeContainer(): NarrativeContainer {
         return this.panel.narrativeContainer;
     }

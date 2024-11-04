@@ -37,29 +37,11 @@ export class Location {
         this._locationPanelController.open();
     }
 
-    public async createCharacter(character: CharacterModel): Promise<void> {
-        const character_view = await this.createCharacterView(character);
-
-        this._locationPanelController.setCharacterLeft(character_view);
+    public async setupCharacter(view: CharacterView): Promise<void> {
+        this._locationPanelController.setCharacterLeft(view);
     }
 
-    public async createEnemy(character: CharacterModel): Promise<void> {
-        const character_view = await this.createCharacterView(character);
-
-        this._locationPanelController.setCharacterRight(character_view);
-    }
-
-    private async createCharacterView(character: CharacterModel): Promise<CharacterView> {
-        const core_bundle = await this._assets.loadBundle(BUNDLES.CORE);
-
-        const character_prefab = await core_bundle!.loadPrefab("prefabs/characters/knight");
-
-        const instance = instantiate(character_prefab);
-
-        const character_view = instance.getComponent(CharacterView)!;
-
-        character_view.setup(character);
-
-        return character_view;
+    public async setupEnemy(view: CharacterView): Promise<void> {
+        this._locationPanelController.setCharacterRight(view);
     }
 }

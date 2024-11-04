@@ -4,7 +4,7 @@ import {LocationBackground} from "./location-background.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 import {CoreConfig} from "../core-application-state.ts";
 import {CharacterView} from "../auto-battler/character-view.ts";
-import {CHARACTER_ANIMATION_TYPE} from "../auto-battler/character-model.ts";
+import { CHARACTER_ANIMATION_TYPE } from "../auto-battler/character-view-model.ts";
 
 @_decorator.ccclass("LocationPanel")
 export class LocationPanel extends PanelBase {

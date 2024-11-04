@@ -1,9 +1,10 @@
-import { Button, Component, _decorator, Node, Prefab, instantiate, ScrollView, Vec2, Label } from "cc";
+import { Button, Component, _decorator, Node, Prefab, instantiate, ScrollView, Vec2, Label, UITransform } from "cc";
 import { NarrativeBlock } from "./narrative-block.ts";
 import { INarrativeBlockInfo } from "./narrative-controller.ts";
 
 @_decorator.ccclass("NarrativeContainer")
 export class NarrativeContainer extends Component {
+    @_decorator.property(UITransform) public uiTransform: UITransform;
     @_decorator.property(Prefab) public blockPrefab: Prefab;
     @_decorator.property(Button) public nextButton: Button;
     @_decorator.property(Label) public nextButtonLabel: Label;
@@ -36,7 +37,7 @@ export class NarrativeContainer extends Component {
         this._blocks = [];
     }
 
-    private scrollToOffsetSmooth(targetOffset: Vec2, duration: number): void {
-
+    public getBlockHeight(): number {
+        return this.uiTransform.contentSize.y;
     }
 }
