@@ -2,6 +2,7 @@ import {HudPanelController} from "../hud/hud-panel-controller.ts";
 import {PanelManager, Services, ServiceType} from "../../../services";
 import {NarrativeContainer} from "./narrative-container.ts";
 import {Button, Color, Sprite} from "cc";
+import {AutoBattlerController} from "../auto-battler/auto-battler-controller.ts";
 
 export enum NARRATIVE_BLOCK_TYPE {
     INFO = "INFO",
@@ -11,6 +12,14 @@ export enum NARRATIVE_BLOCK_TYPE {
 export interface INarrativeBlockInfo {
     type: NARRATIVE_BLOCK_TYPE,
     text: string,
+}
+
+export interface INarrativeBlockDefault extends INarrativeBlockInfo {
+
+}
+
+export interface INarrativeBlockBattle extends INarrativeBlockInfo {
+    
 }
 
 export const NarrativeBlocks: INarrativeBlockInfo[] = [
@@ -186,10 +195,12 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
 
 
 export class NarrativeController {
-    private _panelManager: PanelManager;
+    private readonly _panelManager: PanelManager;
     private declare _hud: HudPanelController;
 
-    private declare _narrativeContainer: NarrativeContainer;
+    private declare _autoBattlerController: AutoBattlerController;
+
+    private declare _container: NarrativeContainer;
 
     private _index: number = -1;
 
@@ -200,10 +211,14 @@ export class NarrativeController {
         this._panelManager = Services.get(ServiceType.PANEL_MANAGER);
     }
 
-    public async initialize(): Promise<void> {
+    public async initializeAsync(): Promise<void> {
+        this._autoBattlerController = new AutoBattlerController();
+
+        await this._autoBattlerController.initializeAsync();
+
         this._hud = await this._panelManager.LoadPanel(HudPanelController);
 
-        this._narrativeContainer = this._hud.getNarrativeContainer();
+        this._container = this._hud.getNarrativeContainer();
 
         this.next();
     }
@@ -215,24 +230,24 @@ export class NarrativeController {
 
         switch (block.type) {
             case NARRATIVE_BLOCK_TYPE.INFO:
-                this._narrativeContainer.nextButtonLabel.string = "Следующий день";
+                this._container.nextButtonLabel.string = "Следующий день";
 
-                this._narrativeContainer.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#76E694");
+                this._container.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#76E694");
 
-                this._narrativeContainer.nextButton.node.on(Button.EventType.CLICK, this._nextHandler);
-                this._narrativeContainer.nextButton.node.off(Button.EventType.CLICK, this._battleHandler);
+                this._container.nextButton.node.on(Button.EventType.CLICK, this._nextHandler);
+                this._container.nextButton.node.off(Button.EventType.CLICK, this._battleHandler);
                 break;
             case NARRATIVE_BLOCK_TYPE.BATTLE:
-                this._narrativeContainer.nextButtonLabel.string = "В бой!";
+                this._container.nextButtonLabel.string = "В бой!";
 
-                this._narrativeContainer.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#E67676");
+                this._container.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#E67676");
 
-                this._narrativeContainer.nextButton.node.on(Button.EventType.CLICK, this._battleHandler);
-                this._narrativeContainer.nextButton.node.off(Button.EventType.CLICK, this._nextHandler);
+                this._container.nextButton.node.on(Button.EventType.CLICK, this._battleHandler);
+                this._container.nextButton.node.off(Button.EventType.CLICK, this._nextHandler);
                 break;
         }
 
-        this._narrativeContainer.add(this._index + 1, block);
+        this._container.add(this._index + 1, block);
     }
 
     private battle(): void {

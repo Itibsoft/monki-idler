@@ -1,6 +1,6 @@
 import {_decorator, Button, Component, Node, Prefab, instantiate, Sprite, Color} from "cc";
-import {IStat} from "../../../core/auto-battler/StatsController.ts";
 import {StatItem} from "./stat-item.ts";
+import {IStat} from "../../../core/auto-battler/character.ts";
 
 const GRAY: string = "#BBBBBB";
 const GREEN: string = "#A5CF7E";

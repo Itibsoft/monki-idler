@@ -1,6 +1,6 @@
 import { Component, Label, _decorator } from "cc";
 import {Counter} from "./counter.ts";
-import {IStat} from "../../../core/auto-battler/StatsController.ts";
+import { IStat } from "../../../core/auto-battler/character.ts";
 
 @_decorator.ccclass("StatItem")
 export class StatItem extends Component {

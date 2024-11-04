@@ -3,7 +3,6 @@ import {HudPanelController} from "./hud/hud-panel-controller.ts";
 import {PanelManager, Services, ServiceType} from "../../services";
 import {Location} from "./location/location.ts";
 import {BehaviorSubject} from "../../utils/behaviour-subject.ts";
-import {StatsController} from "./auto-battler/StatsController.ts";
 import {NarrativeController} from "./narrative/narrative-controller.ts";
 
 export class CoreConfig {
@@ -40,13 +39,9 @@ export class CoreApplicationState extends ApplicationState {
             location_bundle: "forest-location"
         });
 
-        const stats_controller = new StatsController();
         const narrative_controller = new NarrativeController();
 
-        await stats_controller.initialize();
-        await narrative_controller.initialize();
-
-
+        await narrative_controller.initializeAsync();
     }
     public async exitAsync(): Promise<void> {
         this._hudPanelController.release();
