@@ -4,6 +4,7 @@ import {AssetsBundleManager, BUNDLES, Logger, PanelDispatcher, PanelManager} fro
 import {Loader} from "../loader";
 import {APPLICATION_STATE_TYPE, ApplicationState} from "./application-state.ts";
 import {CoreApplicationState} from "../states/core/core-application-state.ts";
+import {DebugPanelController} from "../states/shared/debug/debug-panel-controller.ts";
 
 type Task = () => Promise<void>;
 
@@ -20,6 +21,7 @@ export class Application {
         const logger = new Logger();
         const assets = new AssetsBundleManager();
         const loader = new Loader();
+        let panel_manager: PanelManager;
 
         tasks.set("initialize panel manager", async () => {
             const shared_bundle = await assets.loadBundle(BUNDLES.SHARED);
@@ -39,7 +41,7 @@ export class Application {
 
             const panel_dispatcher = instance.getComponent(PanelDispatcher) as PanelDispatcher;
 
-            new PanelManager(panel_dispatcher);
+            panel_manager = new PanelManager(panel_dispatcher);
         });
 
         tasks.set("initialize loader", async () => {
@@ -50,11 +52,17 @@ export class Application {
 
         tasks.set("create application states", async () => {
             this._states.set(APPLICATION_STATE_TYPE.CORE, new CoreApplicationState());
-        })
+        });
 
         tasks.set("enter core application state", async () => {
             await Application.enterStateAsync(APPLICATION_STATE_TYPE.CORE)
-        })
+        });
+
+        tasks.set("load debug panel", async () => {
+            const debug = await panel_manager.LoadPanel(DebugPanelController);
+
+            debug.open();
+        });
 
         let step_index: number = 0;
 
