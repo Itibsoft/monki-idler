@@ -2,6 +2,13 @@ import {APPLICATION_STATE_TYPE, ApplicationState} from "../../application/applic
 import {HudPanelController} from "./hud/hud-panel-controller.ts";
 import {PanelManager, Services, ServiceType} from "../../services";
 import {Location} from "./location/location.ts";
+import {BehaviorSubject} from "../../utils/behaviour-subject.ts";
+
+export class CoreConfig {
+    public static readonly locationSpeed: BehaviorSubject<number> = new BehaviorSubject<number>(350);
+    public static readonly locationIsMove: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+}
 
 export class CoreApplicationState extends ApplicationState {
     public type: APPLICATION_STATE_TYPE = APPLICATION_STATE_TYPE.CORE;

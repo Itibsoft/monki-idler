@@ -10,14 +10,16 @@ export class LocationPanelController extends PanelControllerBase<LocationPanel> 
         asset_path: "ui/location-panel"
     };
 
-
-
     public constructor() {
         super();
     }
 
+    async initialize(): Promise<void> {
+        return super.initialize();
+    }
+
     public setLocationPrefab(prefab: Prefab): void {
-        this.panel.createLocationInstance(prefab);
+        this.panel.setup(prefab);
     }
 
     public setBackgroundBottom(height: number): void {

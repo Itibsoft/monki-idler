@@ -1,6 +1,8 @@
 import { PanelBase } from "../../../services";
 import { Widget, _decorator, Node, Prefab, instantiate, UITransform, screen } from "cc";
 import {LocationBackground} from "./location-background.ts";
+import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
+import {CoreConfig} from "../core-application-state.ts";
 
 @_decorator.ccclass("LocationPanel")
 export class LocationPanel extends PanelBase {
@@ -11,12 +13,15 @@ export class LocationPanel extends PanelBase {
     private _locationBackground_1: LocationBackground;
     private _locationBackground_2: LocationBackground;
 
-    private _speed: number = 500;
     private _width: number = 0;
 
-    private _init: boolean = false;
+    private declare _speed: BehaviorSubject<number>;
+    private declare _isMove: BehaviorSubject<boolean>;
 
-    public createLocationInstance(prefab: Prefab): void {
+    public setup(prefab: Prefab): void {
+        this._speed = CoreConfig.locationSpeed;
+        this._isMove = CoreConfig.locationIsMove;
+
         this._locationBackground_1 = instantiate(prefab).getComponent(LocationBackground)!;
         this._locationBackground_2 = instantiate(prefab).getComponent(LocationBackground)!;
 
@@ -28,15 +33,15 @@ export class LocationPanel extends PanelBase {
         this._locationBackground_1.setPositionLeft(0);
         this._locationBackground_2.setPositionLeft(this._width);
 
-        this._init = true;
+        this._isMove.next(true);
     }
 
     protected update(dt: number): void {
-        if (!this._init) {
+        if (!this._isMove.value) {
             return;
         }
 
-        const move_step = dt * this._speed;
+        const move_step = dt * this._speed.value;
 
         // Перемещение экземпляров фона
         this._locationBackground_1.move(move_step);
