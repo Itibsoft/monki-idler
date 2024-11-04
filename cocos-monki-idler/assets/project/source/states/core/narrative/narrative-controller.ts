@@ -1,7 +1,7 @@
 import {HudPanelController} from "../hud/hud-panel-controller.ts";
 import {PanelManager, Services, ServiceType} from "../../../services";
 import {NarrativeContainer} from "./narrative-container.ts";
-import { Button } from "cc";
+import {Button, Color, Sprite} from "cc";
 
 export enum NARRATIVE_BLOCK_TYPE {
     INFO = "INFO",
@@ -191,7 +191,7 @@ export class NarrativeController {
 
     private declare _narrativeContainer: NarrativeContainer;
 
-    private _index: number = 0;
+    private _index: number = -1;
 
     public constructor() {
         this._panelManager = Services.get(ServiceType.PANEL_MANAGER);
@@ -204,15 +204,21 @@ export class NarrativeController {
 
         this._narrativeContainer.nextButton.node.on(Button.EventType.CLICK, this.onNext.bind(this));
 
-        const block = NarrativeBlocks[this._index];
-
-        this._narrativeContainer.add(this._index + 1, block);
+        this.onNext();
     }
 
     private onNext(): void {
         this._index++;
 
         const block = NarrativeBlocks[this._index];
+
+        if (block.type === NARRATIVE_BLOCK_TYPE.BATTLE) {
+            this._narrativeContainer.nextButtonLabel.string = "В бой!"
+            this._narrativeContainer.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#E67676")
+        } else {
+            this._narrativeContainer.nextButtonLabel.string = "Следующий день"
+            this._narrativeContainer.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#76E694")
+        }
 
         this._narrativeContainer.add(this._index + 1, block);
     }

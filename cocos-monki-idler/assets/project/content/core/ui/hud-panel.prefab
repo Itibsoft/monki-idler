@@ -1584,6 +1584,9 @@
     "nextButton": {
       "__id__": 69
     },
+    "nextButtonLabel": {
+      "__id__": 74
+    },
     "narrativeBlocksContainer": {
       "__id__": 39
     },
@@ -1820,9 +1823,9 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 0,
-      "g": 0,
-      "b": 0,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_string": "Идти дальше",
@@ -1967,9 +1970,9 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 83,
-      "g": 255,
-      "b": 129,
+      "r": 118,
+      "g": 230,
+      "b": 148,
       "a": 255
     },
     "_spriteFrame": {
