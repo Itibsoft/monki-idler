@@ -1,3 +1,4 @@
+import { Prefab, Widget } from "cc";
 import {BUNDLES, PANEL_TYPE, PanelControllerBase, PanelMeta} from "../../../services";
 import {LocationPanel} from "./location-panel.ts";
 
@@ -9,8 +10,14 @@ export class LocationPanelController extends PanelControllerBase<LocationPanel> 
         asset_path: "ui/location-panel"
     };
 
+
+
     public constructor() {
         super();
+    }
+
+    public setLocationPrefab(prefab: Prefab): void {
+        this.panel.createLocationInstance(prefab);
     }
 
     public setBackgroundBottom(height: number): void {

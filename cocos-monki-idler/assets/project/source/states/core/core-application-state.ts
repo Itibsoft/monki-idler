@@ -26,7 +26,9 @@ export class CoreApplicationState extends ApplicationState {
         const height =  this._hudPanelController.getNarrativeBlockHeight();
 
         await location.loadAsync({
-            hud_height: height
+            hud_height: height,
+            location_prefab: "prefabs/forest",
+            location_bundle: "forest-location"
         });
     }
     public async exitAsync(): Promise<void> {
