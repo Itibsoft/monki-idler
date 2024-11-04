@@ -8,6 +8,7 @@ export enum CHARACTER_ANIMATION_TYPE {
     WALK = "walk",
     HIT = "hit",
     ATTACK = "sword_attack",
+    CRIT_ATTACK = "shield_attack",
     DEAD = "dead"
 }
 
@@ -55,7 +56,7 @@ export class CharacterViewModel {
 
         console.log(`Атака: ${attack_value} (Критический удар: ${is_critical_hit})`);
 
-        this._view.playAnimation(CHARACTER_ANIMATION_TYPE.ATTACK, false);
+        this._view.playAnimation(is_critical_hit ? CHARACTER_ANIMATION_TYPE.CRIT_ATTACK : CHARACTER_ANIMATION_TYPE.ATTACK, false);
 
         await AsyncUtils.wait(0.5);
 
