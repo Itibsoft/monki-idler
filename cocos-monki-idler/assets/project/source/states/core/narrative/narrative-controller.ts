@@ -193,6 +193,9 @@ export class NarrativeController {
 
     private _index: number = -1;
 
+    private readonly _nextHandler: () => void =  this.next.bind(this);
+    private readonly _battleHandler: () => void =  this.battle.bind(this);
+
     public constructor() {
         this._panelManager = Services.get(ServiceType.PANEL_MANAGER);
     }
@@ -202,24 +205,37 @@ export class NarrativeController {
 
         this._narrativeContainer = this._hud.getNarrativeContainer();
 
-        this._narrativeContainer.nextButton.node.on(Button.EventType.CLICK, this.onNext.bind(this));
-
-        this.onNext();
+        this.next();
     }
 
-    private onNext(): void {
+    private next(): void {
         this._index++;
 
         const block = NarrativeBlocks[this._index];
 
-        if (block.type === NARRATIVE_BLOCK_TYPE.BATTLE) {
-            this._narrativeContainer.nextButtonLabel.string = "В бой!"
-            this._narrativeContainer.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#E67676")
-        } else {
-            this._narrativeContainer.nextButtonLabel.string = "Следующий день"
-            this._narrativeContainer.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#76E694")
+        switch (block.type) {
+            case NARRATIVE_BLOCK_TYPE.INFO:
+                this._narrativeContainer.nextButtonLabel.string = "Следующий день";
+
+                this._narrativeContainer.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#76E694");
+
+                this._narrativeContainer.nextButton.node.on(Button.EventType.CLICK, this._nextHandler);
+                this._narrativeContainer.nextButton.node.off(Button.EventType.CLICK, this._battleHandler);
+                break;
+            case NARRATIVE_BLOCK_TYPE.BATTLE:
+                this._narrativeContainer.nextButtonLabel.string = "В бой!";
+
+                this._narrativeContainer.nextButton.getComponent(Sprite)!.color = new Color().fromHEX("#E67676");
+
+                this._narrativeContainer.nextButton.node.on(Button.EventType.CLICK, this._battleHandler);
+                this._narrativeContainer.nextButton.node.off(Button.EventType.CLICK, this._nextHandler);
+                break;
         }
 
         this._narrativeContainer.add(this._index + 1, block);
+    }
+
+    private battle(): void {
+
     }
 }
