@@ -1,10 +1,10 @@
-import {Character} from "./character.ts";
+import {CharacterModel} from "./character-model.ts";
 
 export class Battle {
-    public readonly characterA: Character;
-    public readonly characterB: Character;
+    public readonly characterA: CharacterModel;
+    public readonly characterB: CharacterModel;
 
-    public constructor(characterA: Character, characterB: Character) {
+    public constructor(characterA: CharacterModel, characterB: CharacterModel) {
         this.characterA = characterA;
         this.characterB = characterB;
     }

@@ -3,10 +3,22 @@ import {PanelManager, Services, ServiceType} from "../../../services";
 import {NarrativeContainer} from "./narrative-container.ts";
 import {Button, Color, Sprite} from "cc";
 import {AutoBattlerController} from "../auto-battler/auto-battler-controller.ts";
+import {Location} from "../location/location.ts";
+import {CharacterModel, STAT_ATTACK_TYPE, STAT_BASE_TYPE, STAT_CATEGORY} from "../auto-battler/character-model.ts";
+import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 
 export enum NARRATIVE_BLOCK_TYPE {
     INFO = "INFO",
     BATTLE = "BATTLE"
+}
+
+export enum REWARD_TYPE {
+    CURRENCY,
+    STAT
+}
+
+export interface IRewardInfo {
+    type: REWARD_TYPE
 }
 
 export interface INarrativeBlockInfo {
@@ -204,6 +216,10 @@ export class NarrativeController {
 
     private _index: number = -1;
 
+    private _location: Location;
+
+    private _character: CharacterModel;
+
     private readonly _nextHandler: () => void =  this.next.bind(this);
     private readonly _battleHandler: () => void =  this.battle.bind(this);
 
@@ -219,6 +235,44 @@ export class NarrativeController {
         this._hud = await this._panelManager.LoadPanel(HudPanelController);
 
         this._container = this._hud.getNarrativeContainer();
+
+        this._hud.open();
+
+        this._location = new Location();
+
+        const height = this._hud.getNarrativeBlockHeight();
+
+        await this._location.loadAsync({
+            hud_height: height,
+            location_prefab: "prefabs/forest",
+            location_bundle: "forest-location"
+        });
+
+        this._character = new CharacterModel([
+            {
+                category: STAT_CATEGORY.BASE,
+                type: STAT_BASE_TYPE.ATTACK,
+                name: "Атака",
+                description: "Наносимый персонажем урон",
+                value: new BehaviorSubject<number>(20)
+            },
+            {
+                category: STAT_CATEGORY.BASE,
+                type: STAT_BASE_TYPE.HEALTH,
+                name: "Здоровье",
+                description: "Максимальное здоровье персонажа",
+                value: new BehaviorSubject<number>(100)
+            },
+            {
+                category: STAT_CATEGORY.ATTACK,
+                type: STAT_ATTACK_TYPE.CRIT,
+                name: "Критический удар",
+                description: "С некоторой вероятностью наносит 200% урона, эта цифра также может быть улучшена",
+                value: new BehaviorSubject<number>(10)
+            }
+        ]);
+
+        await this._location.createCharacter(this._character);
 
         this.next();
     }
@@ -250,7 +304,33 @@ export class NarrativeController {
         this._container.add(this._index + 1, block);
     }
 
-    private battle(): void {
+    private async battle(): Promise<void> {
+        const enemy = new CharacterModel([
+            {
+                category: STAT_CATEGORY.BASE,
+                type: STAT_BASE_TYPE.ATTACK,
+                name: "Атака",
+                description: "Наносимый персонажем урон",
+                value: new BehaviorSubject<number>(20)
+            },
+            {
+                category: STAT_CATEGORY.BASE,
+                type: STAT_BASE_TYPE.HEALTH,
+                name: "Здоровье",
+                description: "Максимальное здоровье персонажа",
+                value: new BehaviorSubject<number>(100)
+            },
+            {
+                category: STAT_CATEGORY.ATTACK,
+                type: STAT_ATTACK_TYPE.CRIT,
+                name: "Критический удар",
+                description: "С некоторой вероятностью наносит 200% урона, эта цифра также может быть улучшена",
+                value: new BehaviorSubject<number>(10)
+            }
+        ]);
 
+        await this._location.createEnemy(enemy);
+
+        this._autoBattlerController.startBattle(this._character, enemy);
     }
 }

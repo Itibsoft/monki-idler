@@ -1,7 +1,7 @@
 import {Battle} from "./battle.ts";
 import {PanelManager, Services, ServiceType} from "../../../services";
 import {DebugPanelController} from "../../shared/debug/debug-panel-controller.ts";
-import {Character} from "./character.ts";
+import {CharacterModel} from "./character-model.ts";
 
 export class AutoBattlerController {
     private readonly _panelManager: PanelManager;
@@ -15,7 +15,7 @@ export class AutoBattlerController {
         this._debug = await this._panelManager.LoadPanel(DebugPanelController);
     }
 
-    public startBattle(characterA: Character, characterB: Character): void {
+    public startBattle(characterA: CharacterModel, characterB: CharacterModel): void {
         this._debug.setupStats(characterA, characterB);
 
         const battle = new Battle(characterA, characterB);

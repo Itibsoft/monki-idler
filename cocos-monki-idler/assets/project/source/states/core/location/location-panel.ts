@@ -1,13 +1,15 @@
-import { PanelBase } from "../../../services";
-import { Widget, _decorator, Node, Prefab, instantiate, UITransform, screen } from "cc";
+import {PanelBase} from "../../../services";
+import {_decorator, instantiate, Node, Prefab, screen, Widget} from "cc";
 import {LocationBackground} from "./location-background.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 import {CoreConfig} from "../core-application-state.ts";
+import {CharacterView} from "../auto-battler/character-view.ts";
+import {CHARACTER_ANIMATION_TYPE} from "../auto-battler/character-model.ts";
 
 @_decorator.ccclass("LocationPanel")
 export class LocationPanel extends PanelBase {
     @_decorator.property(Widget) public backgroundWidget: Widget;
-    @_decorator.property(Widget) public characterWidget: Widget;
+    @_decorator.property(Widget) public charactersWidget: Widget;
     @_decorator.property(Node) public backgroundContainer: Node;
 
     private _locationBackground_1: LocationBackground;
@@ -17,6 +19,9 @@ export class LocationPanel extends PanelBase {
 
     private declare _speed: BehaviorSubject<number>;
     private declare _isMove: BehaviorSubject<boolean>;
+
+    public enemies: CharacterView[] = [];
+    public character: CharacterView;
 
     public setup(prefab: Prefab): void {
         this._speed = CoreConfig.locationSpeed;
@@ -46,6 +51,32 @@ export class LocationPanel extends PanelBase {
         // Перемещение экземпляров фона
         this._locationBackground_1.move(move_step);
         this._locationBackground_2.move(move_step);
+
+        if(this.enemies.length > 0) {
+            this._speed.next(1000);
+
+            let is_moved_enemy: boolean = false;
+            for (const enemy of this.enemies) {
+                enemy.widget.right += move_step;
+
+                if(enemy.widget.right >= 50) {
+                    is_moved_enemy = true;
+                }
+            }
+
+            if(is_moved_enemy) {
+                for (const enemy of this.enemies) {
+                    enemy.playAnimation(CHARACTER_ANIMATION_TYPE.IDLE);
+                }
+
+                this.enemies = [];
+
+                this.character.playAnimation(CHARACTER_ANIMATION_TYPE.IDLE);
+
+                this._speed.next(350)
+                this._isMove.next(false);
+            }
+        }
 
         // Определяем ширину экрана
         const screenWidth = screen.windowSize.width;

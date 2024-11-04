@@ -28,7 +28,12 @@ export interface IStat {
     value: BehaviorSubject<number>
 }
 
-export class Character {
+export enum CHARACTER_ANIMATION_TYPE {
+    IDLE = "idle_1",
+    WALK = "walk"
+}
+
+export class CharacterModel {
     public readonly stats: IStat[];
 
     public constructor(stats: IStat[]) {
@@ -41,7 +46,7 @@ export class Character {
             ?.value;
     }
 
-    public attack(opponent: Character): void {
+    public attack(opponent: CharacterModel): void {
         const attackValue = this.getStat(STAT_CATEGORY.ATTACK, STAT_BASE_TYPE.ATTACK)?.value || 0;
         const criticalHitChance = this.getStat(STAT_CATEGORY.ATTACK, STAT_ATTACK_TYPE.CRIT)?.value || 0;
 
@@ -73,35 +78,3 @@ export class Character {
         return health > 0;
     }
 }
-
-/*
-* [
-            {
-                category: STAT_CATEGORY.BASE,
-                type: STAT_BASE_TYPE.ATTACK,
-                name: "Атака",
-                description: "Наносимый персонажем урон",
-                value: new BehaviorSubject<number>(100)
-            },
-            {
-                category: STAT_CATEGORY.BASE,
-                type: STAT_BASE_TYPE.HEALTH,
-                name: "Здоровье",
-                description: "Максимальное здоровье персонажа",
-                value: new BehaviorSubject<number>(100)
-            },
-            {
-                category: STAT_CATEGORY.BASE,
-                type: STAT_BASE_TYPE.LUCK,
-                name: "Удача",
-                description: "Показатель, отвечающий за вероятности в мини-играх аля казино, шанс выпадения более редких мутаций и более благоприятных исходов событий, а также шансы срабатывания всех навыков",
-                value: new BehaviorSubject<number>(100)
-            },
-            {
-                category: STAT_CATEGORY.ATTACK,
-                type: STAT_ATTACK_TYPE.CRIT,
-                name: "Критический удар",
-                description: "С некоторой вероятностью наносит 200% урона, эта цифра также может быть улучшена",
-                value: new BehaviorSubject<number>(100)
-            }
-        ]*/
