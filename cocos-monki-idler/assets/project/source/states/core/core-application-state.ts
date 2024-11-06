@@ -3,14 +3,13 @@ import {HudPanelController} from "./hud/hud-panel-controller.ts";
 import {AssetsBundle, AssetsBundleManager, BUNDLES, PanelManager, Services, ServiceType} from "../../services";
 import {Location} from "./location/location.ts";
 import {BehaviorSubject} from "../../utils/behaviour-subject.ts";
-import {INarrativeBlockBattle, NARRATIVE_EVENT, NarrativeController} from "./narrative/narrative-controller.ts";
+import {INarrativeBlockBattle, NarrativeController} from "./narrative/narrative-controller.ts";
 import {CharacterModel, STAT_ATTACK_TYPE, STAT_BASE_TYPE, STAT_CATEGORY} from "./auto-battler/character-model.ts";
 import {instantiate} from "cc";
 import {CharacterView} from "./auto-battler/character-view.ts";
 import {AutoBattlerController} from "./auto-battler/auto-battler-controller.ts";
 import {CharacterViewModel} from "./auto-battler/character-view-model.ts";
 import {AsyncUtils} from "../../utils/async-utils.ts";
-import {GameResultPanel} from "./game-result/game-result-panel.ts";
 import {GAME_RESULT_TYPE, GameResultPanelController} from "./game-result/game-result-panel-controller.ts";
 
 export class CoreConfig {
@@ -33,9 +32,7 @@ export class CoreApplicationState extends ApplicationState {
     private declare _narrative: NarrativeController;
     private declare _location: Location;
 
-    private declare _character: CharacterViewModel;
-
-    private readonly _onBattleHandler: () => Promise<void> = this.onBattleAsync.bind(this);
+    private declare _character: CharacterViewModel | undefined;
 
     public constructor() {
         super();
@@ -77,7 +74,7 @@ export class CoreApplicationState extends ApplicationState {
 
         this._narrative = new NarrativeController(container);
 
-        this._narrative.event.on(NARRATIVE_EVENT.BATTLE, this._onBattleHandler);
+        this._narrative.onBattle.add(this.onBattleAsync, this);
     }
 
     private async initializeAutoBattleAsync(): Promise<void> {
@@ -107,21 +104,21 @@ export class CoreApplicationState extends ApplicationState {
                 type: STAT_BASE_TYPE.ATTACK,
                 name: "Атака",
                 description: "Наносимый персонажем урон",
-                value: new BehaviorSubject<number>(20)
+                value: 20
             },
             {
                 category: STAT_CATEGORY.BASE,
                 type: STAT_BASE_TYPE.HEALTH,
                 name: "Здоровье",
                 description: "Максимальное здоровье персонажа",
-                value: new BehaviorSubject<number>(100)
+                value: 100
             },
             {
                 category: STAT_CATEGORY.ATTACK,
                 type: STAT_ATTACK_TYPE.CRIT,
                 name: "Критический удар",
                 description: "С некоторой вероятностью наносит 200% урона, эта цифра также может быть улучшена",
-                value: new BehaviorSubject<number>(10)
+                value: 10
             }
         ]);
 
@@ -139,9 +136,15 @@ export class CoreApplicationState extends ApplicationState {
         await this._location.setupCharacter(view);
 
         this._character = view_model;
+
+        this._character.onDead.add(this.onCharacterDead, this);
     }
 
     private async onBattleAsync(info: INarrativeBlockBattle): Promise<void> {
+        if(!this._character) {
+            throw new Error("Not found main character");
+        }
+
         const bundle = await this._assets.loadBundle(info.enemy.bundle) as AssetsBundle;
 
         const prefab = await bundle.loadPrefab(info.enemy.prefab);
@@ -158,8 +161,16 @@ export class CoreApplicationState extends ApplicationState {
 
         await this._autoBattler.startBattleAsync(this._character, view_model);
 
-
         this._narrative.next();
+    }
+
+    private onCharacterDead(character: CharacterViewModel): void {
+        character.release();
+
+        const current_day = this._narrative.getCurrentDay();
+        const max_day = this._narrative.getMaxDay();
+
+        this._gameResult.openResult(GAME_RESULT_TYPE.LOSE, current_day, max_day)
     }
 
     private onGameResultOK(result: GAME_RESULT_TYPE): void {

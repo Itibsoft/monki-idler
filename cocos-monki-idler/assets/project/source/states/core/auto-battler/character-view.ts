@@ -1,5 +1,6 @@
 import { Component, Label, Prefab, Widget, _decorator, instantiate, sp, Node, UITransform, tween, UIOpacity, Vec3} from "cc";
 import {CHARACTER_ANIMATION_TYPE, CharacterViewModel} from "./character-view-model.ts";
+import {AsyncUtils} from "../../../utils/async-utils.ts";
 
 @_decorator.ccclass("CharacterView")
 export class CharacterView extends Component {
@@ -16,7 +17,17 @@ export class CharacterView extends Component {
     }
 
     public playAnimation(animation: CHARACTER_ANIMATION_TYPE, loop?: boolean): void {
-        this.spine.setAnimation(0, animation, loop)
+        this.spine.setAnimation(0, animation, loop);
+    }
+
+    public async playAnimationAsync(animation: CHARACTER_ANIMATION_TYPE): Promise<void> {
+        this.spine.setAnimation(0, animation, false);
+
+        const state = this.spine.getState()!;
+
+        const track = state.getCurrent(0);
+
+        await AsyncUtils.wait(track.animation.duration);
     }
 
     public addHitInfo(hit: number): void {

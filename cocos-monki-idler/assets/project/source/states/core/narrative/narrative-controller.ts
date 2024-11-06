@@ -1,17 +1,10 @@
-import {HudPanelController} from "../hud/hud-panel-controller.ts";
-import {BUNDLES, PanelManager, Services, ServiceType} from "../../../services";
+import {BUNDLES} from "../../../services";
 import {NarrativeContainer} from "./narrative-container.ts";
-import {Button, Color, Sprite, EventTarget} from "cc";
-import {AutoBattlerController} from "../auto-battler/auto-battler-controller.ts";
+import {Button, Color, Sprite} from "cc";
 import {Location} from "../location/location.ts";
-import {
-    CharacterModel,
-    IStat,
-    STAT_ATTACK_TYPE,
-    STAT_BASE_TYPE,
-    STAT_CATEGORY
-} from "../auto-battler/character-model.ts";
-import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
+import {STAT_ATTACK_TYPE, STAT_BASE_TYPE, STAT_CATEGORY} from "../auto-battler/character-model.ts";
+import {Delegate} from "../../../utils/delegate.ts";
+import {LocalStorage} from "../../../utils/local-storage.ts";
 
 export enum REWARD_TYPE {
     CURRENCY,
@@ -40,7 +33,15 @@ export interface INarrativeBlockBattle extends INarrativeBlockInfo {
 export interface IEnemyInfo {
     bundle: string,
     prefab: string,
-    stats: IStat[]
+    stats: IStatInfo[]
+}
+
+export interface IStatInfo {
+    category: STAT_CATEGORY,
+    type: number,
+    name: string,
+    description: string,
+    value: number
 }
 
 export const NarrativeBlocks: INarrativeBlockInfo[] = [
@@ -60,21 +61,21 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                     type: STAT_BASE_TYPE.ATTACK,
                     name: "Атака",
                     description: "Наносимый персонажем урон",
-                    value: new BehaviorSubject<number>(20)
+                    value: 20
                 },
                 {
                     category: STAT_CATEGORY.BASE,
                     type: STAT_BASE_TYPE.HEALTH,
                     name: "Здоровье",
                     description: "Максимальное здоровье персонажа",
-                    value: new BehaviorSubject<number>(100)
+                    value: 100
                 },
                 {
                     category: STAT_CATEGORY.ATTACK,
                     type: STAT_ATTACK_TYPE.CRIT,
                     name: "Критический удар",
                     description: "С некоторой вероятностью наносит 200% урона, эта цифра также может быть улучшена",
-                    value: new BehaviorSubject<number>(10)
+                    value: 10
                 }
             ]
         }
@@ -85,12 +86,10 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
     },
 ];
 
-export enum NARRATIVE_EVENT {
-    BATTLE = "BATTLE"
-}
+const MAX_DAY_COUNT_KEY: string = "max_day_count";
 
 export class NarrativeController {
-    public readonly event: EventTarget = new EventTarget();
+    public onBattle: Delegate<INarrativeBlockBattle> = new Delegate<INarrativeBlockBattle>();
 
     private readonly _container: NarrativeContainer;
 
@@ -113,11 +112,23 @@ export class NarrativeController {
         this.next();
     }
 
+    public getCurrentDay(): number {
+        return this._index + 1;
+    }
+
+    public getMaxDay(): number {
+        return LocalStorage.getData<number>(MAX_DAY_COUNT_KEY, 0)! + 1;
+    }
+
     public next(): void {
         this._index++;
 
         if(this._index == NarrativeBlocks.length) {
             this._index = 0;
+        }
+
+        if(this.getCurrentDay() > this.getMaxDay()) {
+            LocalStorage.setData<number>(MAX_DAY_COUNT_KEY, this._index);
         }
 
         this._currentBlock = NarrativeBlocks[this._index];
@@ -146,9 +157,15 @@ export class NarrativeController {
 
     private async battle(): Promise<void> {
         if(!this._currentBlock) {
-            return;
+            throw new Error("Not found narrative block for battle");
         }
 
-        this.event.emit(NARRATIVE_EVENT.BATTLE, this._currentBlock);
+        if(this._currentBlock.type !== NARRATIVE_BLOCK_TYPE.BATTLE) {
+            throw new Error("Narrative block no correct for battle");
+        }
+
+        const battle_block = this._currentBlock as INarrativeBlockBattle;
+
+        this.onBattle.invoke(battle_block)
     }
 }

@@ -2,6 +2,7 @@ import {CharacterModel, IStat, STAT_ATTACK_TYPE, STAT_BASE_TYPE, STAT_CATEGORY} 
 import {CharacterView} from "./character-view.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 import {AsyncUtils} from "../../../utils/async-utils.ts";
+import {Delegate} from "../../../utils/delegate.ts";
 
 export enum CHARACTER_ANIMATION_TYPE {
     IDLE = "idle_1",
@@ -13,6 +14,8 @@ export enum CHARACTER_ANIMATION_TYPE {
 }
 
 export class CharacterViewModel {
+    public onDead: Delegate<CharacterViewModel> = new Delegate<CharacterViewModel>();
+
     private _model: CharacterModel;
     private _view: CharacterView;
 
@@ -22,15 +25,19 @@ export class CharacterViewModel {
 
         view.setup(this);
 
-        this._model.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.HEALTH)?.on(async value => {
-            if(value <= 0) {
-                this._view.playAnimation(CHARACTER_ANIMATION_TYPE.DEAD, false);
+        const health_stat =  this._model.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.HEALTH)!;
 
-                await AsyncUtils.wait(0.5);
+        health_stat.on(this.onHealthChanged.bind(this));
+    }
 
-                this._view.node.destroy();
-            }
-        })
+    private async onHealthChanged(health: number): Promise<void> {
+        if(health <= 0) {
+            await this._view.playAnimationAsync(CHARACTER_ANIMATION_TYPE.DEAD);
+
+            this.onDead.invoke(this);
+
+            return;
+        }
     }
 
     public getStats(): IStat[] {
@@ -46,27 +53,25 @@ export class CharacterViewModel {
     }
 
     public takeDamage(damage: number): void {
+        this._model.takeDamage(damage);
+
         this._view.playAnimation(CHARACTER_ANIMATION_TYPE.HIT, false)
         this._view.addHitInfo(damage);
-
-        this._model.takeDamage(damage);
     }
 
     public async attackAsync(target: CharacterViewModel): Promise<void> {
-        const attack_value = this.getStat(STAT_CATEGORY.ATTACK, STAT_BASE_TYPE.ATTACK)?.value || 0;
-        const critical_hit_chance = this.getStat(STAT_CATEGORY.ATTACK, STAT_ATTACK_TYPE.CRIT)?.value || 0;
+        const result = this._model.attack(target._model);
 
-        const is_critical_hit = Math.random() < (critical_hit_chance / 100);
-        const damage = is_critical_hit ? attack_value * 2 : attack_value;
-
-        console.log(`Атака: ${attack_value} (Критический удар: ${is_critical_hit})`);
-
-        this._view.playAnimation(is_critical_hit ? CHARACTER_ANIMATION_TYPE.CRIT_ATTACK : CHARACTER_ANIMATION_TYPE.ATTACK, false);
+        this._view.playAnimation(result.is_crit ? CHARACTER_ANIMATION_TYPE.CRIT_ATTACK : CHARACTER_ANIMATION_TYPE.ATTACK, false);
 
         await AsyncUtils.wait(0.5);
 
-        target.takeDamage(damage);
+        target.takeDamage(result.damage);
 
         await AsyncUtils.wait(0.5);
+    }
+
+    public release(): void {
+        this._view.node.destroy();
     }
 }
