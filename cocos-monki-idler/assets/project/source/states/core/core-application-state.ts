@@ -11,12 +11,7 @@ import {AutoBattlerController} from "./auto-battler/auto-battler-controller.ts";
 import {CharacterViewModel} from "./auto-battler/character-view-model.ts";
 import {AsyncUtils} from "../../utils/async-utils.ts";
 import {GAME_RESULT_TYPE, GameResultPanelController} from "./game-result/game-result-panel-controller.ts";
-
-export class CoreConfig {
-    public static readonly locationSpeed: BehaviorSubject<number> = new BehaviorSubject<number>(350);
-    public static readonly locationIsMove: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-}
+import {DebugPanelController} from "../shared/debug/debug-panel-controller.ts";
 
 export class CoreApplicationState extends ApplicationState {
     public type: APPLICATION_STATE_TYPE = APPLICATION_STATE_TYPE.CORE;
@@ -95,6 +90,10 @@ export class CoreApplicationState extends ApplicationState {
             location_prefab: "prefabs/forest",
             location_bundle: "forest-location"
         });
+
+        const debug = await this._panelManager.LoadPanel(DebugPanelController);
+
+        debug.setupLocation(this._location);
     }
 
     private async createCharacterAsync(): Promise<void> {
@@ -140,6 +139,16 @@ export class CoreApplicationState extends ApplicationState {
         this._character.onDead.add(this.onCharacterDead, this);
     }
 
+    private async restart(): Promise<void> {
+        if(!this._character) {
+            await this.createCharacterAsync();
+        }
+
+        this._location.isMove.next(true);
+
+        this._narrative.start();
+    }
+
     private async onBattleAsync(info: INarrativeBlockBattle): Promise<void> {
         if(!this._character) {
             throw new Error("Not found main character");
@@ -165,7 +174,11 @@ export class CoreApplicationState extends ApplicationState {
     }
 
     private onCharacterDead(character: CharacterViewModel): void {
+        this._location.isMove.next(false);
+
         character.release();
+
+        this._character = undefined;
 
         const current_day = this._narrative.getCurrentDay();
         const max_day = this._narrative.getMaxDay();
@@ -173,7 +186,11 @@ export class CoreApplicationState extends ApplicationState {
         this._gameResult.openResult(GAME_RESULT_TYPE.LOSE, current_day, max_day)
     }
 
-    private onGameResultOK(result: GAME_RESULT_TYPE): void {
+    private async onGameResultOK(result: GAME_RESULT_TYPE): Promise<void> {
+        this._location.isMove.next(false);
 
+        await this.restart();
+
+        this._gameResult.close();
     }
 }

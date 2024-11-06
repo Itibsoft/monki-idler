@@ -2,6 +2,7 @@ import { Prefab, Vec3, Widget } from "cc";
 import {BUNDLES, PANEL_TYPE, PanelControllerBase, PanelMeta} from "../../../services";
 import {LocationPanel} from "./location-panel.ts";
 import {CharacterView} from "../auto-battler/character-view.ts";
+import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 
 export class LocationPanelController extends PanelControllerBase<LocationPanel> {
     public readonly meta: PanelMeta = {
@@ -21,8 +22,8 @@ export class LocationPanelController extends PanelControllerBase<LocationPanel> 
         return super.initialize();
     }
 
-    public setLocationPrefab(prefab: Prefab): void {
-        this.panel.setup(prefab);
+    public setLocationPrefab(prefab: Prefab, isMove: BehaviorSubject<boolean>, speed: BehaviorSubject<number>): void {
+        this.panel.setup(prefab, isMove, speed);
     }
 
     public setBackgroundBottom(height: number): void {

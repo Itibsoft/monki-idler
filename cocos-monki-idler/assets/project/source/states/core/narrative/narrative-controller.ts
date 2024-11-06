@@ -109,6 +109,8 @@ export class NarrativeController {
         this._index = -1;
         this._currentBlock = undefined;
 
+        this._container.clear();
+
         this.next();
     }
 

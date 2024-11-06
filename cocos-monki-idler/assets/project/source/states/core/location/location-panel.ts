@@ -2,7 +2,6 @@ import {PanelBase} from "../../../services";
 import {_decorator, instantiate, Node, Prefab, screen, Widget} from "cc";
 import {LocationBackground} from "./location-background.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
-import {CoreConfig} from "../core-application-state.ts";
 import {CharacterView} from "../auto-battler/character-view.ts";
 import { CHARACTER_ANIMATION_TYPE } from "../auto-battler/character-view-model.ts";
 
@@ -23,9 +22,9 @@ export class LocationPanel extends PanelBase {
     public enemies: CharacterView[] = [];
     public character: CharacterView;
 
-    public setup(prefab: Prefab): void {
-        this._speed = CoreConfig.locationSpeed;
-        this._isMove = CoreConfig.locationIsMove;
+    public setup(prefab: Prefab, isMove: BehaviorSubject<boolean>, speed: BehaviorSubject<number>): void {
+        this._isMove = isMove;
+        this._speed = speed;
 
         this._locationBackground_1 = instantiate(prefab).getComponent(LocationBackground)!;
         this._locationBackground_2 = instantiate(prefab).getComponent(LocationBackground)!;
