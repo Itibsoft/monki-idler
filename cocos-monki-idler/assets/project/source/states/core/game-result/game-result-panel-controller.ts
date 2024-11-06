@@ -43,8 +43,10 @@ export class GameResultPanelController extends PanelControllerBase<GameResultPan
                 break;
         }
 
-        this.panel.currentDay.string = `${current_day} Деней`;
-        this.panel.maxDay.string = `Макс: ${max_day} Деней`;
+        this.panel.currentDay.string = `${current_day} Дн.`;
+        this.panel.maxDay.string = `Макс: ${max_day} Дн.`;
+
+        this.open();
     }
 
     private OK(): void {
