@@ -30,6 +30,11 @@ export class Counter extends Component {
     }
 
     private setValueText(value: number): void {
-        this.valueLabel.string = `${value}%`;
+        try {
+            this.valueLabel.string = `${value}%`;
+        } catch {
+
+        }
+
     }
 }
