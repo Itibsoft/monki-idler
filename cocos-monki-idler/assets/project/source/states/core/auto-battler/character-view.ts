@@ -1,10 +1,13 @@
-import { Component, Widget, _decorator, sp } from "cc";
+import { Component, Label, Prefab, Widget, _decorator, instantiate, sp, Node, UITransform, tween, UIOpacity, Vec3} from "cc";
 import {CHARACTER_ANIMATION_TYPE, CharacterViewModel} from "./character-view-model.ts";
 
 @_decorator.ccclass("CharacterView")
 export class CharacterView extends Component {
     @_decorator.property(Widget) public widget: Widget;
     @_decorator.property(sp.Skeleton) public spine: sp.Skeleton;
+    @_decorator.property(Node) public messageBox: Node;
+
+    @_decorator.property(Prefab) public hitPrefab: Prefab;
 
     private _viewModel: CharacterViewModel;
 
@@ -14,5 +17,43 @@ export class CharacterView extends Component {
 
     public playAnimation(animation: CHARACTER_ANIMATION_TYPE, loop?: boolean): void {
         this.spine.setAnimation(0, animation, loop)
+    }
+
+    public addHitInfo(hit: number): void {
+        const instance = instantiate(this.hitPrefab);
+        instance.setParent(this.messageBox);
+
+        const label = instance.getComponent(Label)!;
+        label.string = `- ${hit}`;
+
+        const transform = this.messageBox.getComponent(UITransform)!;
+        const width = transform.contentSize.width;
+        const height = transform.contentSize.height;
+
+        // Генерируем случайную позицию для появления
+        const randomX = Math.random() * width - width / 2;
+        const randomY = Math.random() * height - height / 2;
+
+        // Устанавливаем начальную позицию
+        instance.setPosition(randomX, randomY, 0);
+        this.messageBox.addChild(instance);
+
+        // Получаем компонент UIOpacity для изменения прозрачности
+        const opacityComponent = instance.getComponent(UIOpacity)!;
+        opacityComponent.opacity = 0; // Начальная прозрачность = 0
+
+        // Плавное движение вверх
+        tween(instance)
+            .to(0.5, { position: new Vec3(randomX, randomY + 100, 0) })  // Поднимаем вверх
+            .start();
+
+        // Плавное появление и исчезновение текста через компонент UIOpacity
+        tween(opacityComponent)
+            .to(0.5, { opacity: 255 })  // Плавно увеличиваем прозрачность до 255
+            .to(0.5, { opacity: 0 })    // Плавно уменьшаем прозрачность до 0
+            .call(() => {
+                instance.destroy();  // Удаляем объект после завершения анимации
+            })
+            .start();
     }
 }

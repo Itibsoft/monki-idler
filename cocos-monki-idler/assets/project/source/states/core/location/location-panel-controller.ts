@@ -50,7 +50,7 @@ export class LocationPanelController extends PanelControllerBase<LocationPanel> 
         character.widget.isAlignRight = true;
         character.widget.right = -1000;
 
-        character.node.scale = new Vec3(-character.node.scale.x, character.node.scale.y, character.node.scale.z);
+        character.spine.node.scale = new Vec3(-character.node.scale.x, character.node.scale.y, character.node.scale.z);
 
         this.panel.enemies.push(character);
     }

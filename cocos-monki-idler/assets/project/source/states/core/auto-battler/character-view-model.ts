@@ -43,6 +43,7 @@ export class CharacterViewModel {
 
     public takeDamage(damage: number): void {
         this._view.playAnimation(CHARACTER_ANIMATION_TYPE.HIT, false)
+        this._view.addHitInfo(damage);
 
         this._model.takeDamage(damage);
     }
