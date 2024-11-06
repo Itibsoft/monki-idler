@@ -116,6 +116,10 @@ export class NarrativeController {
     public next(): void {
         this._index++;
 
+        if(this._index == NarrativeBlocks.length) {
+            this._index = 0;
+        }
+
         this._currentBlock = NarrativeBlocks[this._index];
 
         switch (this._currentBlock.type) {

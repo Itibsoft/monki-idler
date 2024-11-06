@@ -10,6 +10,8 @@ import {CharacterView} from "./auto-battler/character-view.ts";
 import {AutoBattlerController} from "./auto-battler/auto-battler-controller.ts";
 import {CharacterViewModel} from "./auto-battler/character-view-model.ts";
 import {AsyncUtils} from "../../utils/async-utils.ts";
+import {GameResultPanel} from "./game-result/game-result-panel.ts";
+import {GAME_RESULT_TYPE, GameResultPanelController} from "./game-result/game-result-panel-controller.ts";
 
 export class CoreConfig {
     public static readonly locationSpeed: BehaviorSubject<number> = new BehaviorSubject<number>(350);
@@ -24,6 +26,9 @@ export class CoreApplicationState extends ApplicationState {
     private readonly _assets: AssetsBundleManager;
 
     private declare _hud: HudPanelController;
+    private declare _gameResult: GameResultPanelController;
+
+
     private declare _autoBattler: AutoBattlerController;
     private declare _narrative: NarrativeController;
     private declare _location: Location;
@@ -41,6 +46,8 @@ export class CoreApplicationState extends ApplicationState {
 
     public async enterAsync(): Promise<void> {
         await this.initializeHUDAsync();
+        await this.initializeGameResultAsync();
+
         await this.initializeNarrativeAsync();
         await this.initializeAutoBattleAsync();
         await this.initializeLocationAsync();
@@ -57,6 +64,12 @@ export class CoreApplicationState extends ApplicationState {
         this._hud = await this._panelManager.LoadPanel(HudPanelController);
 
         this._hud.open();
+    }
+
+    private async initializeGameResultAsync(): Promise<void> {
+        this._gameResult = await this._panelManager.LoadPanel(GameResultPanelController);
+
+        this._gameResult.onOK.add(this.onGameResultOK, this);
     }
 
     private async initializeNarrativeAsync(): Promise<void> {
@@ -147,5 +160,9 @@ export class CoreApplicationState extends ApplicationState {
 
 
         this._narrative.next();
+    }
+
+    private onGameResultOK(result: GAME_RESULT_TYPE): void {
+
     }
 }

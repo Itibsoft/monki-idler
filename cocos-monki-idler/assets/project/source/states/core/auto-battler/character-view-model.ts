@@ -22,9 +22,13 @@ export class CharacterViewModel {
 
         view.setup(this);
 
-        this._model.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.HEALTH)?.on(value => {
+        this._model.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.HEALTH)?.on(async value => {
             if(value <= 0) {
                 this._view.playAnimation(CHARACTER_ANIMATION_TYPE.DEAD, false);
+
+                await AsyncUtils.wait(0.5);
+
+                this._view.node.destroy();
             }
         })
     }
