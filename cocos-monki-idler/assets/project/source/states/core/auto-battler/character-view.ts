@@ -9,6 +9,7 @@ export class CharacterView extends Component {
     @_decorator.property(Node) public messageBox: Node;
 
     @_decorator.property(Prefab) public hitPrefab: Prefab;
+    @_decorator.property(UIOpacity) public uiOpacity: UIOpacity;
 
     private _viewModel: CharacterViewModel;
 
@@ -21,13 +22,23 @@ export class CharacterView extends Component {
     }
 
     public async playAnimationAsync(animation: CHARACTER_ANIMATION_TYPE): Promise<void> {
-        this.spine.setAnimation(0, animation, false);
+        this.spine.setAnimation(1, animation, false);
 
         const state = this.spine.getState()!;
 
         const track = state.getCurrent(0);
 
         await AsyncUtils.wait(track.animation.duration);
+    }
+
+    public async fadeAsync(): Promise<void> {
+        const duration: number = 0.5;
+
+        tween(this.uiOpacity)
+            .to(duration, { opacity: 0 })
+            .start();
+
+        await AsyncUtils.wait(duration)
     }
 
     public addHitInfo(hit: number): void {

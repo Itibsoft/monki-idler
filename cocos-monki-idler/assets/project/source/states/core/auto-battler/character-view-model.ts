@@ -33,6 +33,7 @@ export class CharacterViewModel {
     private async onHealthChanged(health: number): Promise<void> {
         if(health <= 0) {
             await this._view.playAnimationAsync(CHARACTER_ANIMATION_TYPE.DEAD);
+            await this._view.fadeAsync();
 
             this.onDead.invoke(this);
 
