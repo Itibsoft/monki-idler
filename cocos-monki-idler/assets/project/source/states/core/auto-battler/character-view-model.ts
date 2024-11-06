@@ -1,7 +1,6 @@
-import {CharacterModel, IStat, STAT_ATTACK_TYPE, STAT_BASE_TYPE, STAT_CATEGORY} from "./character-model.ts";
+import {CharacterModel, IStat, STAT_BASE_TYPE, STAT_CATEGORY} from "./character-model.ts";
 import {CharacterView} from "./character-view.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
-import {AsyncUtils} from "../../../utils/async-utils.ts";
 import {Delegate} from "../../../utils/delegate.ts";
 
 export enum CHARACTER_ANIMATION_TYPE {
@@ -12,6 +11,16 @@ export enum CHARACTER_ANIMATION_TYPE {
     CRIT_ATTACK = "shield_attack",
     DEAD = "dead"
 }
+
+const TRACK_ID: Map<CHARACTER_ANIMATION_TYPE, number> = new Map([
+   [CHARACTER_ANIMATION_TYPE.IDLE, 0],
+   [CHARACTER_ANIMATION_TYPE.WALK, 1],
+   [CHARACTER_ANIMATION_TYPE.HIT, 2],
+   [CHARACTER_ANIMATION_TYPE.ATTACK, 3],
+   [CHARACTER_ANIMATION_TYPE.CRIT_ATTACK, 4],
+   [CHARACTER_ANIMATION_TYPE.DEAD, 5],
+])
+
 
 export class CharacterViewModel {
     public onDead: Delegate<CharacterViewModel> = new Delegate<CharacterViewModel>();
@@ -27,18 +36,13 @@ export class CharacterViewModel {
 
         const health_stat =  this._model.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.HEALTH)!;
 
-        health_stat.on(this.onHealthChanged.bind(this));
-    }
+        const max_health = this.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.HEALTH)?.value ?? 0;
 
-    private async onHealthChanged(health: number): Promise<void> {
-        if(health <= 0) {
-            await this._view.playAnimationAsync(CHARACTER_ANIMATION_TYPE.DEAD);
-            await this._view.fadeAsync();
+        this._view.healthBar.setTotalProgress(max_health);
 
-            this.onDead.invoke(this);
-
-            return;
-        }
+        health_stat.on(health => {
+            this._view.healthBar.setCurrentProgress(health);
+        });
     }
 
     public getStats(): IStat[] {
@@ -53,23 +57,41 @@ export class CharacterViewModel {
         return this._model.isAlive();
     }
 
-    public takeDamage(damage: number): void {
+    public async takeDamageAsync(damage: number): Promise<void> {
+        if(!this.isAlive()) {
+            return;
+        }
+
         this._model.takeDamage(damage);
 
-        this._view.playAnimation(CHARACTER_ANIMATION_TYPE.HIT, false)
+        await this._view.playAnimationHalfDurationAsync(CHARACTER_ANIMATION_TYPE.HIT);
+
         this._view.addHitInfo(damage);
+
+        if(!this._model.isAlive()) {
+            await this._view.playAnimationAsync(CHARACTER_ANIMATION_TYPE.DEAD);
+            await this._view.fadeAsync();
+
+            this.onDead.invoke(this);
+
+            return;
+        }
     }
 
     public async attackAsync(target: CharacterViewModel): Promise<void> {
         const result = this._model.attack(target._model);
 
-        this._view.playAnimation(result.is_crit ? CHARACTER_ANIMATION_TYPE.CRIT_ATTACK : CHARACTER_ANIMATION_TYPE.ATTACK, false);
+        const type_anim = result.is_crit ?
+            CHARACTER_ANIMATION_TYPE.CRIT_ATTACK :
+            CHARACTER_ANIMATION_TYPE.ATTACK;
 
-        await AsyncUtils.wait(0.5);
+        await this._view.playAnimationHalfDurationAsync(type_anim);
 
-        target.takeDamage(result.damage);
+        await target.takeDamageAsync(result.damage);
+    }
 
-        await AsyncUtils.wait(0.5);
+    public move(): void {
+        this._view.playAnimation(CHARACTER_ANIMATION_TYPE.WALK, true);
     }
 
     public release(): void {

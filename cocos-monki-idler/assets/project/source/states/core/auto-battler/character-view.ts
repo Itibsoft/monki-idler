@@ -1,6 +1,7 @@
 import { Component, Label, Prefab, Widget, _decorator, instantiate, sp, Node, UITransform, tween, UIOpacity, Vec3} from "cc";
 import {CHARACTER_ANIMATION_TYPE, CharacterViewModel} from "./character-view-model.ts";
 import {AsyncUtils} from "../../../utils/async-utils.ts";
+import {CustomProgressBar} from "../../../utils/custom-progress-bar.ts";
 
 @_decorator.ccclass("CharacterView")
 export class CharacterView extends Component {
@@ -11,6 +12,8 @@ export class CharacterView extends Component {
     @_decorator.property(Prefab) public hitPrefab: Prefab;
     @_decorator.property(UIOpacity) public uiOpacity: UIOpacity;
 
+    @_decorator.property(CustomProgressBar) public healthBar: CustomProgressBar;
+
     private _viewModel: CharacterViewModel;
 
     public setup(viewModel: CharacterViewModel) {
@@ -18,17 +21,30 @@ export class CharacterView extends Component {
     }
 
     public playAnimation(animation: CHARACTER_ANIMATION_TYPE, loop?: boolean): void {
+        this.spine.clearTracks();
         this.spine.setAnimation(0, animation, loop);
     }
 
     public async playAnimationAsync(animation: CHARACTER_ANIMATION_TYPE): Promise<void> {
+        this.spine.clearTracks();
         this.spine.setAnimation(1, animation, false);
 
         const state = this.spine.getState()!;
 
-        const track = state.getCurrent(0);
+        const track = state.getCurrent(1);
 
         await AsyncUtils.wait(track.animation.duration);
+    }
+
+    public async playAnimationHalfDurationAsync(animation: CHARACTER_ANIMATION_TYPE): Promise<void> {
+        this.spine.clearTracks();
+        this.spine.setAnimation(3, animation, false);
+
+        const state = this.spine.getState()!;
+
+        const track = state.getCurrent(3);
+
+        await AsyncUtils.wait(track.animation.duration / 2);
     }
 
     public async fadeAsync(): Promise<void> {

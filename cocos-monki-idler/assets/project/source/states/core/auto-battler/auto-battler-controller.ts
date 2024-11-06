@@ -7,6 +7,8 @@ export class AutoBattlerController {
     private readonly _panelManager: PanelManager;
     private declare _debug: DebugPanelController;
 
+    private _currentBattle: Battle | undefined;
+
     public constructor() {
         this._panelManager = Services.get(ServiceType.PANEL_MANAGER);
     }
@@ -20,6 +22,16 @@ export class AutoBattlerController {
 
         const battle = new Battle(characterA, characterB);
 
+        this._currentBattle = battle;
+
         await battle.startAsync();
+    }
+
+    public release(): void {
+        if(!this._currentBattle) {
+            return;
+        }
+
+        this._currentBattle.characterB.release();
     }
 }

@@ -56,6 +56,10 @@ export class LocationPanel extends PanelBase {
 
             let is_moved_enemy: boolean = false;
             for (const enemy of this.enemies) {
+                if(!enemy.node) {
+                    continue;
+                }
+
                 enemy.widget.right += move_step;
 
                 if(enemy.widget.right >= 50) {
@@ -65,10 +69,12 @@ export class LocationPanel extends PanelBase {
 
             if(is_moved_enemy) {
                 for (const enemy of this.enemies) {
+                    if(!enemy.node) {
+                        continue;
+                    }
+
                     enemy.playAnimation(CHARACTER_ANIMATION_TYPE.IDLE);
                 }
-
-                this.enemies = [];
 
                 this.character.playAnimation(CHARACTER_ANIMATION_TYPE.IDLE);
 

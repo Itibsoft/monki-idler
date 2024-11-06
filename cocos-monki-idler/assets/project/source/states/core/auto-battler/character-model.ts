@@ -59,7 +59,12 @@ export class CharacterModel {
 
     public takeDamage(damage: number): void {
         const healthStat = this.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.HEALTH);
+
         if (healthStat) {
+            if(healthStat.value <= 0) {
+                return;
+            }
+
             const newHealth = healthStat.value - damage;
             healthStat.next(Math.max(0, newHealth));
             console.log(`Здоровье после урона: ${healthStat.value}`);

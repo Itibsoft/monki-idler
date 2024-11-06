@@ -5,6 +5,7 @@ import {Location} from "../location/location.ts";
 import {STAT_ATTACK_TYPE, STAT_BASE_TYPE, STAT_CATEGORY} from "../auto-battler/character-model.ts";
 import {Delegate} from "../../../utils/delegate.ts";
 import {LocalStorage} from "../../../utils/local-storage.ts";
+import {CharacterViewModel} from "../auto-battler/character-view-model.ts";
 
 export enum REWARD_TYPE {
     CURRENCY,
@@ -97,12 +98,18 @@ export class NarrativeController {
     private _currentBlock: INarrativeBlockInfo | undefined;
 
     private _location: Location;
+    private _character: CharacterViewModel;
 
     private readonly _nextHandler: () => void =  this.next.bind(this);
     private readonly _battleHandler: () => void =  this.battle.bind(this);
 
-    public constructor(container: NarrativeContainer) {
+    public constructor(location: Location, container: NarrativeContainer) {
+        this._location = location;
         this._container = container;
+    }
+
+    public setupCharacter(character: CharacterViewModel): void {
+        this._character = character;
     }
 
     public start(): void {
@@ -123,6 +130,13 @@ export class NarrativeController {
     }
 
     public next(): void {
+        this._location.isMove.next(true);
+
+        if(this._character.isAlive()) {
+            this._character.move();
+        }
+
+
         this._index++;
 
         if(this._index == NarrativeBlocks.length) {

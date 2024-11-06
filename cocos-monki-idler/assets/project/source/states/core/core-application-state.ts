@@ -40,9 +40,9 @@ export class CoreApplicationState extends ApplicationState {
         await this.initializeHUDAsync();
         await this.initializeGameResultAsync();
 
+        await this.initializeLocationAsync();
         await this.initializeNarrativeAsync();
         await this.initializeAutoBattleAsync();
-        await this.initializeLocationAsync();
         await this.createCharacterAsync();
 
         this._narrative.start();
@@ -67,7 +67,7 @@ export class CoreApplicationState extends ApplicationState {
     private async initializeNarrativeAsync(): Promise<void> {
         const container = this._hud.getNarrativeContainer();
 
-        this._narrative = new NarrativeController(container);
+        this._narrative = new NarrativeController(this._location, container);
 
         this._narrative.onBattle.add(this.onBattleAsync, this);
     }
@@ -121,7 +121,6 @@ export class CoreApplicationState extends ApplicationState {
             }
         ]);
 
-
         const core_bundle = await this._assets.loadBundle(BUNDLES.CORE);
 
         const character_prefab = await core_bundle!.loadPrefab("prefabs/characters/knight");
@@ -137,14 +136,18 @@ export class CoreApplicationState extends ApplicationState {
         this._character = view_model;
 
         this._character.onDead.add(this.onCharacterDead, this);
+
+        this._narrative.setupCharacter(this._character);
     }
 
     private async restart(): Promise<void> {
+        this._autoBattler.release();
+
         if(!this._character) {
             await this.createCharacterAsync();
         }
 
-        this._location.isMove.next(true);
+        this._narrative.setupCharacter(this._character!);
 
         this._narrative.start();
     }
@@ -164,13 +167,19 @@ export class CoreApplicationState extends ApplicationState {
 
         const view_model = new CharacterViewModel(model, view);
 
+        view_model.onDead.add((c) => {
+            c.release();
+        }, this);
+
         await this._location.setupEnemy(view);
 
         await AsyncUtils.wait(1);
 
         await this._autoBattler.startBattleAsync(this._character, view_model);
 
-        this._narrative.next();
+        if(this._character && this._character.isAlive()) {
+            this._narrative.next();
+        }
     }
 
     private onCharacterDead(character: CharacterViewModel): void {
