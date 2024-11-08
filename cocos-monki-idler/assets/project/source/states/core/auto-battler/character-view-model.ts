@@ -12,16 +12,6 @@ export enum CHARACTER_ANIMATION_TYPE {
     DEAD = "dead"
 }
 
-const TRACK_ID: Map<CHARACTER_ANIMATION_TYPE, number> = new Map([
-   [CHARACTER_ANIMATION_TYPE.IDLE, 0],
-   [CHARACTER_ANIMATION_TYPE.WALK, 1],
-   [CHARACTER_ANIMATION_TYPE.HIT, 2],
-   [CHARACTER_ANIMATION_TYPE.ATTACK, 3],
-   [CHARACTER_ANIMATION_TYPE.CRIT_ATTACK, 4],
-   [CHARACTER_ANIMATION_TYPE.DEAD, 5],
-])
-
-
 export class CharacterViewModel {
     public onDead: Delegate<CharacterViewModel> = new Delegate<CharacterViewModel>();
 
