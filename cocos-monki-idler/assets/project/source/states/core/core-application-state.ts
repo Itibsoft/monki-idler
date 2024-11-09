@@ -129,6 +129,8 @@ export class CoreApplicationState extends ApplicationState {
 
         const view = instance.getComponent(CharacterView)!;
 
+        view.isMovable = false;
+
         const view_model = new CharacterViewModel(model, view);
 
         await this._location.setupCharacter(view);
@@ -165,17 +167,27 @@ export class CoreApplicationState extends ApplicationState {
 
         const model = new CharacterModel(info.enemy.stats);
 
-        const view_model = new CharacterViewModel(model, view);
+        const enemy = new CharacterViewModel(model, view);
 
-        view_model.onDead.add((c) => {
+        enemy.onDead.add((c) => {
             c.release();
         }, this);
 
         await this._location.setupEnemy(view);
 
+        this._location.speed.next(1000);
+
         await AsyncUtils.wait(1);
 
-        await this._autoBattler.startBattleAsync(this._character, view_model);
+        view.isMovable = false;
+
+        this._location.speed.next(350);
+        this._location.isMove.next(false);
+
+        this._character.idleAnimation();
+        enemy.idleAnimation();
+
+        await this._autoBattler.startBattleAsync(this._character, enemy);
 
         if(this._character && this._character.isAlive()) {
             this._narrative.next();

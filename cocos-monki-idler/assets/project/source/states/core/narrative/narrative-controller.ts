@@ -46,16 +46,145 @@ export interface IStatInfo {
 }
 
 export const NarrativeBlocks: INarrativeBlockInfo[] = [
+    // Начало путешествия
     {
         type: NARRATIVE_BLOCK_TYPE.INFO,
-        text: "Вы шли по дороге и увидели голубя. В этот момент вы осознали их божество..."
+        text: "Вы шли по дороге и заметили голубя с яркими перьями. В этот момент осознали, что он — символ древнего божества."
     },
-    ({
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "Вдруг стая птиц атаковала вас, разъяренная вашим присутствием. Вы почувствовали, что их действия контролируются."
+    },
+    {
         type: NARRATIVE_BLOCK_TYPE.BATTLE,
-        text: "Неожиданно на вас напала стая диких птиц, разъяренных вашим присутствием!",
+        text: "Стая птиц атакует! Используйте свои силы, чтобы отбиться от них.",
         enemy: {
             bundle: BUNDLES.CORE,
-            prefab: "prefabs/characters/knight",
+            prefab: "prefabs/characters/knight",  // Оставляем один и тот же префаб
+            stats: [
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_BASE_TYPE.ATTACK,
+                    name: "Атака",
+                    description: "Наносимый персонажем урон",
+                    value: 5
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_BASE_TYPE.HEALTH,
+                    name: "Здоровье",
+                    description: "Максимальное здоровье персонажа",
+                    value: 30
+                }
+            ]
+        }
+    } as INarrativeBlockBattle,
+
+    // После первой битвы
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "После победы голубь присел на ваше плечо, и перед вами открылся путь в забытый храм, скрытый в лесу."
+    },
+
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "Лес становился темнее, и каждый шаг казался тяжелее. Воздух наполнялся странным ощущением, будто кто-то следил за вами."
+    },
+
+    // Вторая битва (враги немного сильнее)
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "Перед вами появились лесные монстры. Они смотрят на вас с яростью и готовятся атаковать."
+    },
+    {
+        type: NARRATIVE_BLOCK_TYPE.BATTLE,
+        text: "Эти монстры стали сильнее, будьте готовы к более агрессивной атаке!",
+        enemy: {
+            bundle: BUNDLES.CORE,
+            prefab: "prefabs/characters/knight",  // Оставляем тот же префаб
+            stats: [
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_BASE_TYPE.ATTACK,
+                    name: "Атака",
+                    description: "Наносимый персонажем урон",
+                    value: 10
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_BASE_TYPE.HEALTH,
+                    name: "Здоровье",
+                    description: "Максимальное здоровье персонажа",
+                    value: 50
+                }
+            ]
+        }
+    } as INarrativeBlockBattle,
+
+    // После второй битвы
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "Вы победили монстров и обнаружили древний камень, который излучает странный свет. Он ведет вас дальше в храм."
+    },
+
+    // Третья битва (враги еще сильнее)
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "Появился лесной дух. Он охраняет путь в храм и готов вступить в бой."
+    },
+    {
+        type: NARRATIVE_BLOCK_TYPE.BATTLE,
+        text: "Лесной дух использует магию, будьте осторожны и не поддавайтесь его хитрым атакам.",
+        enemy: {
+            bundle: BUNDLES.CORE,
+            prefab: "prefabs/characters/knight",  // Оставляем тот же префаб
+            stats: [
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_BASE_TYPE.ATTACK,
+                    name: "Атака",
+                    description: "Наносимый персонажем урон",
+                    value: 15
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_BASE_TYPE.HEALTH,
+                    name: "Здоровье",
+                    description: "Максимальное здоровье персонажа",
+                    value: 80
+                }
+            ]
+        }
+    } as INarrativeBlockBattle,
+
+    // После победы
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "Дух повержен. Портал открылся, и вы вошли в храм, полный загадок и магии. Путь ведет в темные глубины."
+    },
+
+    // Внутри храма
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "Внутри храма стены покрыты рунами, а воздух насыщен древней магией. Кажется, что место наблюдает за вами."
+    },
+
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "В одном углу храма вы видите мерцающий камень. Его свет притягивает вас, словно зовет внутрь."
+    },
+
+    // Четвертая битва (враги сильные, с магией)
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "Камень активировал темных стражей, которые охраняют путь. Вы готовы к последней битве?"
+    },
+    {
+        type: NARRATIVE_BLOCK_TYPE.BATTLE,
+        text: "Темные стражи вооружены магическими мечами и могут атаковать с силой. Это будет трудный бой!",
+        enemy: {
+            bundle: BUNDLES.CORE,
+            prefab: "prefabs/characters/knight",  // Оставляем тот же префаб
             stats: [
                 {
                     category: STAT_CATEGORY.BASE,
@@ -69,22 +198,27 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                     type: STAT_BASE_TYPE.HEALTH,
                     name: "Здоровье",
                     description: "Максимальное здоровье персонажа",
-                    value: 100
-                },
-                {
-                    category: STAT_CATEGORY.ATTACK,
-                    type: STAT_ATTACK_TYPE.CRIT,
-                    name: "Критический удар",
-                    description: "С некоторой вероятностью наносит 200% урона, эта цифра также может быть улучшена",
-                    value: 10
+                    value: 120
                 }
             ]
         }
-    } as INarrativeBlockBattle),
+    } as INarrativeBlockBattle,
+
+    // Завершающий этап путешествия
     {
         type: NARRATIVE_BLOCK_TYPE.INFO,
-        text: "Бла бла бла!"
+        text: "Стражи побеждены, и перед вами открылся главный алтарь храма, полный загадочных символов."
     },
+
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "В тот момент, когда вы подошли к алтарю, пространство вокруг вас начало меняться. Магия охватила вас."
+    },
+
+    {
+        type: NARRATIVE_BLOCK_TYPE.INFO,
+        text: "Вы стоите перед выбором: взять силу божества или оставить её в этом забытом месте навсегда."
+    }
 ];
 
 const MAX_DAY_COUNT_KEY: string = "max_day_count";
@@ -133,9 +267,8 @@ export class NarrativeController {
         this._location.isMove.next(true);
 
         if(this._character.isAlive()) {
-            this._character.move();
+            this._character.moveAnimation();
         }
-
 
         this._index++;
 

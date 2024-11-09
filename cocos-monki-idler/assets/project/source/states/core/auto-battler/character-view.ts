@@ -2,9 +2,10 @@ import { Component, Label, Prefab, Widget, _decorator, instantiate, sp, Node, UI
 import {CHARACTER_ANIMATION_TYPE, CharacterViewModel} from "./character-view-model.ts";
 import {AsyncUtils} from "../../../utils/async-utils.ts";
 import {CustomProgressBar} from "../../../utils/custom-progress-bar.ts";
+import {LocationObject} from "../location/location-object.ts";
 
 @_decorator.ccclass("CharacterView")
-export class CharacterView extends Component {
+export class CharacterView extends LocationObject {
     @_decorator.property(Widget) public widget: Widget;
     @_decorator.property(sp.Skeleton) public spine: sp.Skeleton;
     @_decorator.property(Node) public messageBox: Node;

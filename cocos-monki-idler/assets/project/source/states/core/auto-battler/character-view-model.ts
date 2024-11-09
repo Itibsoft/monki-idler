@@ -2,6 +2,7 @@ import {CharacterModel, IStat, STAT_BASE_TYPE, STAT_CATEGORY} from "./character-
 import {CharacterView} from "./character-view.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 import {Delegate} from "../../../utils/delegate.ts";
+import {Vec3, screen, tween} from "cc";
 
 export enum CHARACTER_ANIMATION_TYPE {
     IDLE = "idle_1",
@@ -69,7 +70,13 @@ export class CharacterViewModel {
     }
 
     public async attackAsync(target: CharacterViewModel): Promise<void> {
+        this._view.node.setSiblingIndex(this._view.node.getSiblingIndex() + 1);
+
         const result = this._model.attack(target._model);
+
+        this._view.playAnimation(CHARACTER_ANIMATION_TYPE.WALK);
+        // Плавно перемещаем персонажа к позиции атаки
+        await this.animatePosition(screen.windowSize.x / 2 + 200, 0.1); // 0.5 секунд на перемещение
 
         const type_anim = result.is_crit ?
             CHARACTER_ANIMATION_TYPE.CRIT_ATTACK :
@@ -78,13 +85,40 @@ export class CharacterViewModel {
         await this._view.playAnimationHalfDurationAsync(type_anim);
 
         await target.takeDamageAsync(result.damage);
+
+        this._view.playAnimation(CHARACTER_ANIMATION_TYPE.WALK);
+
+        // Плавно возвращаем персонажа на исходную позицию
+        await this.animatePosition(50, 0.1);
+
+        this._view.playAnimation(CHARACTER_ANIMATION_TYPE.IDLE);
     }
 
-    public move(): void {
+    public moveAnimation(): void {
         this._view.playAnimation(CHARACTER_ANIMATION_TYPE.WALK, true);
+    }
+
+    public idleAnimation(): void {
+        this._view.playAnimation(CHARACTER_ANIMATION_TYPE.IDLE, true);
     }
 
     public release(): void {
         this._view.node.destroy();
+    }
+
+    private animatePosition(targetPosition: number, duration: number): Promise<void> {
+        return new Promise((resolve) => {
+            const startPosition = this._view.getPosition();
+
+            tween({ position: startPosition })
+                .to(duration, { position: targetPosition }, {
+                    easing: "linear",
+                    onUpdate: (target: {position: number}): void => {
+                        this._view.setPosition(target.position);
+                    }
+                })
+                .call(resolve) // Завершаем промис после окончания анимации
+                .start();
+        });
     }
 }

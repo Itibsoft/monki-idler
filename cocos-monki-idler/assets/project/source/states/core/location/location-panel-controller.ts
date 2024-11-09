@@ -4,6 +4,11 @@ import {LocationPanel} from "./location-panel.ts";
 import {CharacterView} from "../auto-battler/character-view.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 
+export enum LOCATION_OBJECT_MOVE_TYPE {
+    LEFT,
+    RIGHT
+}
+
 export class LocationPanelController extends PanelControllerBase<LocationPanel> {
     public readonly meta: PanelMeta = {
         type: PANEL_TYPE.WINDOW,
@@ -32,27 +37,29 @@ export class LocationPanelController extends PanelControllerBase<LocationPanel> 
         this.panel.backgroundWidget.bottom = height;
         this.panel.backgroundWidget.updateAlignment();
 
-        this.panel.charactersWidget.bottom = this._roadHeight;
-        this.panel.charactersWidget.updateAlignment();
+        this.panel.objectsWidget.bottom = this._roadHeight;
+        this.panel.objectsWidget.updateAlignment();
     }
 
     public setCharacterLeft(character: CharacterView): void {
-        character.node.setParent(this.panel.charactersWidget.node);
+        character.node.setParent(this.panel.objectsWidget.node);
 
-        character.widget.isAlignLeft = true;
-        character.widget.left = 50;
+        character.setupTypeMove(LOCATION_OBJECT_MOVE_TYPE.LEFT);
 
-        this.panel.character = character;
+        character.setPosition(50);
+
+        this.panel.addLocationObject(character)
     }
 
     public setCharacterRight(character: CharacterView): void {
-        character.node.setParent(this.panel.charactersWidget.node);
+        character.node.setParent(this.panel.objectsWidget.node);
 
-        character.widget.isAlignRight = true;
-        character.widget.right = -1000;
+        character.setupTypeMove(LOCATION_OBJECT_MOVE_TYPE.RIGHT);
+
+        character.setPosition(-1000);
 
         character.spine.node.scale = new Vec3(-character.node.scale.x, character.node.scale.y, character.node.scale.z);
 
-        this.panel.enemies.push(character);
+        this.panel.addLocationObject(character)
     }
 }
