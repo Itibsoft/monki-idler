@@ -315,6 +315,8 @@ export class NarrativeController {
 
         const battle_block = this._currentBlock as INarrativeBlockBattle;
 
+        this._container.nextButton.node.off(Button.EventType.CLICK, this._battleHandler);
+
         this.onBattle.invoke(battle_block)
     }
 }
