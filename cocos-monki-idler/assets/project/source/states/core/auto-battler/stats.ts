@@ -12,8 +12,9 @@ export enum STAT_CATEGORY {
 export enum STAT_TYPE_BASE {
     NONE = 0,
     ATTACK = 1,
-    HEALTH = 2,
-    LUCK = 3
+    HEALTH_MAX = 2,
+    HEALTH_CURRENT = 3,
+    LUCK = 4
 }
 
 export enum STAT_TYPE_ATTACK {

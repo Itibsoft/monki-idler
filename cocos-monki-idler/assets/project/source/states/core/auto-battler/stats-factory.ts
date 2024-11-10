@@ -38,9 +38,16 @@ export class StatsFactory implements IService {
             //Base stats
             {
                 category: STAT_CATEGORY.BASE,
-                type: STAT_TYPE_BASE.HEALTH,
-                name: "Здоровье",
+                type: STAT_TYPE_BASE.HEALTH_MAX,
+                name: "Максимальное здоровье",
                 description: "Максимальное здоровье персонажа",
+                icon_asset_path: "stats-icons/icon_1"
+            },
+            {
+                category: STAT_CATEGORY.BASE,
+                type: STAT_TYPE_BASE.HEALTH_CURRENT,
+                name: "Текущее здоровье",
+                description: "Текущее здоровье персонажа",
                 icon_asset_path: "stats-icons/icon_1"
             },
             {

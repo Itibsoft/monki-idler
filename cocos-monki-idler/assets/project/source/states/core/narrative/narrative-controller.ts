@@ -85,7 +85,12 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                 },
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_TYPE_BASE.HEALTH,
+                    type: STAT_TYPE_BASE.HEALTH_MAX,
+                    value: 30
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_TYPE_BASE.HEALTH_CURRENT,
                     value: 30
                 }
             ]
@@ -111,7 +116,7 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                 {
                     type: REWARD_TYPE.STAT,
                     stat_category: STAT_CATEGORY.BASE,
-                    stat_type: STAT_TYPE_BASE.HEALTH,
+                    stat_type: STAT_TYPE_BASE.HEALTH_MAX,
                     value: -15
                 } as IRewardStatInfo
             ]
@@ -144,7 +149,12 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                 },
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_TYPE_BASE.HEALTH,
+                    type: STAT_TYPE_BASE.HEALTH_MAX,
+                    value: 50
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_TYPE_BASE.HEALTH_CURRENT,
                     value: 50
                 }
             ]
@@ -176,7 +186,12 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                 },
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_TYPE_BASE.HEALTH,
+                    type: STAT_TYPE_BASE.HEALTH_MAX,
+                    value: 80
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_TYPE_BASE.HEALTH_CURRENT,
                     value: 80
                 }
             ]
@@ -219,7 +234,12 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                 },
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_TYPE_BASE.HEALTH,
+                    type: STAT_TYPE_BASE.HEALTH_MAX,
+                    value: 120
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_TYPE_BASE.HEALTH_CURRENT,
                     value: 120
                 }
             ]

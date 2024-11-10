@@ -10,7 +10,7 @@ import {GAME_RESULT_TYPE, GameResultPanelController} from "./game-result/game-re
 import {DebugPanelController} from "../shared/debug/debug-panel-controller.ts";
 import {IStatValueInfo, STAT_CATEGORY, STAT_TYPE_ATTACK, STAT_TYPE_BASE} from "./auto-battler/stats.ts";
 import {CharactersFactory} from "./auto-battler/characters-factory.ts";
-import { CHARACTER_TYPE } from "./auto-battler/character-model.ts";
+import {CHARACTER_TYPE} from "./auto-battler/character-model.ts";
 
 export class CoreApplicationState extends ApplicationState {
     public type: APPLICATION_STATE_TYPE = APPLICATION_STATE_TYPE.CORE;
@@ -106,7 +106,12 @@ export class CoreApplicationState extends ApplicationState {
             },
             {
                 category: STAT_CATEGORY.BASE,
-                type: STAT_TYPE_BASE.HEALTH,
+                type: STAT_TYPE_BASE.HEALTH_MAX,
+                value: 100
+            },
+            {
+                category: STAT_CATEGORY.BASE,
+                type: STAT_TYPE_BASE.HEALTH_CURRENT,
                 value: 100
             },
             {

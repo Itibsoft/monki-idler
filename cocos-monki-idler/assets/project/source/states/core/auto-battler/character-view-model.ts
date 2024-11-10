@@ -26,19 +26,26 @@ export class CharacterViewModel {
 
         view.setup(this);
 
-        const health_stat =  this._model.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH)!;
+        const health_max =  this._model.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH_MAX)!;
+        const health_current =  this._model.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH_CURRENT)!;
 
-        const max_health = this.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH)?.value ?? 0;
+        this._view.healthBar.setTotalProgress(health_max.value);
 
-        this._view.healthBar.setTotalProgress(max_health);
+        health_max.on(max => {
+            this._view.healthBar.setTotalProgress(max);
+        });
 
-        health_stat.on(health => {
-            this._view.healthBar.setCurrentProgress(health);
+        health_current.on(current => {
+            this._view.healthBar.setCurrentProgress(current);
         });
     }
 
     public getView(): CharacterView {
         return this._view;
+    }
+
+    public getModel(): CharacterModel {
+        return this._model;
     }
 
     public setMovableSceneFlow(is_movable: boolean): void {
@@ -81,11 +88,14 @@ export class CharacterViewModel {
     public async attackAsync(target: CharacterViewModel): Promise<void> {
         this._view.node.setSiblingIndex(this._view.node.getSiblingIndex() + 1);
 
-        const result = this._model.attack(target._model);
+        this._model.regenerateHP();
+
+        const result = this._model.performAttack(target._model);
 
         this._view.playAnimation(CHARACTER_ANIMATION_TYPE.WALK);
+
         // Плавно перемещаем персонажа к позиции атаки
-        await this.animatePosition(screen.windowSize.x / 2 + 200, 0.1); // 0.5 секунд на перемещение
+        await this.animatePosition(screen.windowSize.x / 2 + 250, 0.1); // 0.5 секунд на перемещение
 
         const type_anim = result.is_crit ?
             CHARACTER_ANIMATION_TYPE.CRIT_ATTACK :
