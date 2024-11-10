@@ -107,29 +107,29 @@ export class CoreApplicationState extends ApplicationState {
             {
                 category: STAT_CATEGORY.BASE,
                 type: STAT_TYPE_BASE.HEALTH_MAX,
-                value: 100
+                value: 500
             },
             {
                 category: STAT_CATEGORY.BASE,
                 type: STAT_TYPE_BASE.HEALTH_CURRENT,
-                value: 100
+                value: 500
             },
             {
                 category: STAT_CATEGORY.BASE,
                 type: STAT_TYPE_BASE.DEFENCE,
-                value: 50,
+                value: 10,
             },
 
             {
                 category: STAT_CATEGORY.ATTACK,
                 type: STAT_TYPE_ATTACK.CRIT_ATTACK,
-                value: 10
+                value: 25
             },
 
             {
                 category: STAT_CATEGORY.ATTACK,
                 type: STAT_TYPE_ATTACK.COMBO_ATTACK,
-                value: 100
+                value: 20
             },
 
             {

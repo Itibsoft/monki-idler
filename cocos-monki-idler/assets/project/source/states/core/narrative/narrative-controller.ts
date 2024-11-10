@@ -81,28 +81,24 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                 {
                     category: STAT_CATEGORY.BASE,
                     type: STAT_TYPE_BASE.ATTACK,
-                    value: 1
+                    value: 10
                 },
                 {
                     category: STAT_CATEGORY.BASE,
                     type: STAT_TYPE_BASE.HEALTH_MAX,
-                    value: 5900
+                    value: 500
                 },
                 {
                     category: STAT_CATEGORY.BASE,
                     type: STAT_TYPE_BASE.HEALTH_CURRENT,
-                    value: 5000
+                    value: 500
                 },
                 {
                     category: STAT_CATEGORY.BASE,
                     type: STAT_TYPE_BASE.DEFENCE,
-                    value: 10,
+                    value: 0,
                 },
-                {
-                    category: STAT_CATEGORY.ATTACK,
-                    type: STAT_TYPE_ATTACK.REGEN,
-                    value: 5
-                },
+
 
                 {
                     category: STAT_CATEGORY.ATTACK,
