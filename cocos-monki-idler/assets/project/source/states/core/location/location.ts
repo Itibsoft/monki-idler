@@ -1,8 +1,5 @@
-import {instantiate, Prefab} from "cc";
 import {AssetsBundle, AssetsBundleManager, BUNDLES, PanelManager, Services, ServiceType} from "../../../services";
 import {LocationPanelController} from "./location-panel-controller.ts";
-import {CharacterModel} from "../auto-battler/character-model.ts";
-import {CharacterView} from "../auto-battler/character-view.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 import {CharacterViewModel} from "../auto-battler/character-view-model.ts";
 

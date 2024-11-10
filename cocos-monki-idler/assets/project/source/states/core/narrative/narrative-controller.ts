@@ -4,9 +4,9 @@ import {Button, Color, Sprite} from "cc";
 import {Location} from "../location/location.ts";
 import {Delegate} from "../../../utils/delegate.ts";
 import {LocalStorage} from "../../../utils/local-storage.ts";
+import {IStatValueInfo, STAT_CATEGORY, STAT_TYPE_ATTACK, STAT_TYPE_BASE} from "../auto-battler/stats/stats.ts";
+import { MUTATION_CATEGORY, MUTATION_TYPE } from "../auto-battler/mutations/mutations.ts";
 import {CharacterViewModel} from "../auto-battler/character-view-model.ts";
-import {IStatValueInfo, STAT_CATEGORY, STAT_TYPE_BASE} from "../auto-battler/stats.ts";
-import { MUTATION_CATEGORY, MUTATION_TYPE } from "../auto-battler/mutations.ts";
 
 export enum REWARD_TYPE {
     CURRENCY,
@@ -92,6 +92,28 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                     category: STAT_CATEGORY.BASE,
                     type: STAT_TYPE_BASE.HEALTH_CURRENT,
                     value: 5000
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_TYPE_BASE.DEFENCE,
+                    value: 10,
+                },
+                {
+                    category: STAT_CATEGORY.ATTACK,
+                    type: STAT_TYPE_ATTACK.REGEN,
+                    value: 5
+                },
+
+                {
+                    category: STAT_CATEGORY.ATTACK,
+                    type: STAT_TYPE_ATTACK.COMBO_ATTACK,
+                    value: 50
+                },
+
+                {
+                    category: STAT_CATEGORY.ATTACK,
+                    type: STAT_TYPE_ATTACK.REGEN,
+                    value: 5
                 }
             ]
         }
@@ -156,6 +178,16 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                     category: STAT_CATEGORY.BASE,
                     type: STAT_TYPE_BASE.HEALTH_CURRENT,
                     value: 50
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_TYPE_BASE.DEFENCE,
+                    value: 10,
+                },
+                {
+                    category: STAT_CATEGORY.ATTACK,
+                    type: STAT_TYPE_ATTACK.REGEN,
+                    value: 5
                 }
             ]
         }
@@ -193,6 +225,16 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                     category: STAT_CATEGORY.BASE,
                     type: STAT_TYPE_BASE.HEALTH_CURRENT,
                     value: 80
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_TYPE_BASE.DEFENCE,
+                    value: 10,
+                },
+                {
+                    category: STAT_CATEGORY.ATTACK,
+                    type: STAT_TYPE_ATTACK.REGEN,
+                    value: 5
                 }
             ]
         }
@@ -241,6 +283,16 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
                     category: STAT_CATEGORY.BASE,
                     type: STAT_TYPE_BASE.HEALTH_CURRENT,
                     value: 120
+                },
+                {
+                    category: STAT_CATEGORY.BASE,
+                    type: STAT_TYPE_BASE.DEFENCE,
+                    value: 10,
+                },
+                {
+                    category: STAT_CATEGORY.ATTACK,
+                    type: STAT_TYPE_ATTACK.REGEN,
+                    value: 5
                 }
             ]
         }

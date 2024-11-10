@@ -1,8 +1,8 @@
 import { Button, EditBox } from "cc";
 import {PANEL_TYPE, PanelControllerBase, PanelMeta} from "../../../services";
 import {DebugPanel} from "./debug-panel.ts";
-import {IStat} from "../../core/auto-battler/character-model.ts";
 import {Location} from "../../core/location/location.ts";
+import { IStat } from "../../core/auto-battler/stats/stats.ts";
 
 export class DebugPanelController extends PanelControllerBase<DebugPanel> {
     public readonly meta: PanelMeta = {

@@ -1,4 +1,4 @@
-import {IStatValueInfo, STAT_CATEGORY, STAT_TYPE_ATTACK} from "./stats.ts";
+import {IStatValueInfo, STAT_CATEGORY, STAT_TYPE_ATTACK} from "../stats/stats.ts";
 
 export enum MUTATION_CATEGORY {
     INTELLECTUAL = "INTELLECTUAL"

@@ -1,7 +1,7 @@
 import { Prefab, Vec3, Widget } from "cc";
 import {BUNDLES, PANEL_TYPE, PanelControllerBase, PanelMeta} from "../../../services";
 import {LocationPanel} from "./location-panel.ts";
-import {CharacterView} from "../auto-battler/character-view.ts";
+import {CharacterView} from "../auto-battler/character/character-view.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 
 export enum LOCATION_OBJECT_MOVE_TYPE {

@@ -1,5 +1,5 @@
-import {CharacterViewModel} from "./character-view-model.ts";
 import {AsyncUtils} from "../../../utils/async-utils.ts";
+import {CharacterViewModel} from "./character-view-model.ts";
 
 export class Battle {
     public readonly characterA: CharacterViewModel;
@@ -19,13 +19,19 @@ export class Battle {
     }
 
     private async round(): Promise<void> {
-        await AsyncUtils.wait(0.3);
+        await AsyncUtils.wait(0.3)
+
         this.characterA.updateTempStats();
+        await this.characterA.regenerateHPAsync();
+
         await this.characterA.attackAsync(this.characterB);
 
         if (this.characterB.isAlive()) {
             await AsyncUtils.wait(0.3);
+
             this.characterB.updateTempStats();
+            await this.characterB.regenerateHPAsync();
+
             await this.characterB.attackAsync(this.characterA);
         }
     }

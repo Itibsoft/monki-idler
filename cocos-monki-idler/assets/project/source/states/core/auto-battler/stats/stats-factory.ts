@@ -1,6 +1,6 @@
 import {SpriteAtlas} from "cc";
 
-import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
+import {BehaviorSubject} from "../../../../utils/behaviour-subject.ts";
 
 import {
     IStat,
@@ -13,7 +13,7 @@ import {
     STAT_TYPE_PROTECTIVE
 } from "./stats.ts";
 
-import {AssetsBundle, AssetsBundleManager, BUNDLES, IService, Services, ServiceType} from "../../../services";
+import {AssetsBundle, AssetsBundleManager, BUNDLES, IService, Services, ServiceType} from "../../../../services";
 
 const STATS_ICONS_ATLAS_PATH: string = "sprites/stats-icons/texture";
 
@@ -63,6 +63,13 @@ export class StatsFactory implements IService {
                 name: "Удача",
                 description: "Показатель, отвечающий за вероятности, а также шансы срабатывания всех навыков",
                 icon_asset_path: "stats-icons/icon_3"
+            },
+            {
+              category: STAT_CATEGORY.BASE,
+              type: STAT_TYPE_BASE.DEFENCE,
+              name: "Защита",
+              description: "Численная характеристика, вычитаемая из полученного урона",
+              icon_asset_path: "stats-icons/icon_4"
             },
 
             //Attack stats

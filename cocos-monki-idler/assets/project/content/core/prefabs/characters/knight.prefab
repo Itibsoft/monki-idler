@@ -867,7 +867,7 @@
       "y": 0
     },
     "_fillStart": 0,
-    "_fillRange": 0.38,
+    "_fillRange": 0.44,
     "_isTrimmedMode": true,
     "_useGrayscale": false,
     "_atlas": null,
@@ -1157,7 +1157,7 @@
     "fileId": "ab1ezehidLu4HJhF/GeYH0"
   },
   {
-    "__type__": "d630eBvKnBCG7YTJmTZb5cf",
+    "__type__": "6cb22Bsr+1Jm6OU8bfhCkkQ",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -1172,7 +1172,7 @@
       "__id__": 34
     },
     "total": 100,
-    "current": 38,
+    "current": 44,
     "healthValueLabel": {
       "__id__": 40
     },
@@ -1180,7 +1180,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "4b7gMCZ/5NBK3/5nHHdr0g"
+    "fileId": "b6/D8J579Ekbcue8akJ7CO"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -1260,7 +1260,7 @@
     "fileId": "4d1qExzNtEP53RpNZqJgs4"
   },
   {
-    "__type__": "70bbb9KnLxFfo1KBmlgzw/V",
+    "__type__": "cc.UIOpacity",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -1271,8 +1271,30 @@
     "__prefab": {
       "__id__": 57
     },
+    "_opacity": 255,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "0blVkpQXJOMpV47HcKENqm"
+  },
+  {
+    "__type__": "6c7bb6W3fJH7YSbf/4+exfd",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 59
+    },
     "widget": {
       "__id__": 54
+    },
+    "uiTransform": {
+      "__id__": 52
     },
     "spine": {
       "__id__": 6
@@ -1285,7 +1307,7 @@
       "__expectedType__": "cc.Prefab"
     },
     "uiOpacity": {
-      "__id__": 58
+      "__id__": 56
     },
     "healthBar": {
       "__id__": 49
@@ -1294,26 +1316,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "814Sua1PlIBq7Udj0cdXVW"
-  },
-  {
-    "__type__": "cc.UIOpacity",
-    "_name": "",
-    "_objFlags": 0,
-    "__editorExtras__": {},
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "__prefab": {
-      "__id__": 59
-    },
-    "_opacity": 255,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.CompPrefabInfo",
-    "fileId": "0blVkpQXJOMpV47HcKENqm"
+    "fileId": "64GBYvTdVOx7M4Cj17ODhZ"
   },
   {
     "__type__": "cc.PrefabInfo",

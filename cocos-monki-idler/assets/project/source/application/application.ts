@@ -5,9 +5,9 @@ import {Loader} from "../loader";
 import {APPLICATION_STATE_TYPE, ApplicationState} from "./application-state.ts";
 import {CoreApplicationState} from "../states/core/core-application-state.ts";
 import {DebugPanelController} from "../states/shared/debug/debug-panel-controller.ts";
-import {StatsFactory} from "../states/core/auto-battler/stats-factory.ts";
-import {IStatMetaInfo, STAT_CATEGORY, STAT_TYPE_BASE} from "../states/core/auto-battler/stats.ts";
-import {CharactersFactory} from "../states/core/auto-battler/characters-factory.ts";
+import {StatsFactory} from "../states/core/auto-battler/stats/stats-factory.ts";
+import {IStatMetaInfo, STAT_CATEGORY, STAT_TYPE_BASE} from "../states/core/auto-battler/stats/stats.ts";
+import {CharactersFactory} from "../states/core/auto-battler/character/characters-factory.ts";
 
 type Task = () => Promise<void>;
 

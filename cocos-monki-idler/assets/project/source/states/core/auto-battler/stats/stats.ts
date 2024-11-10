@@ -1,5 +1,5 @@
 import { SpriteFrame } from "cc";
-import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
+import {BehaviorSubject} from "../../../../utils/behaviour-subject.ts";
 
 export enum STAT_CATEGORY {
     NONE = 0,
@@ -14,7 +14,8 @@ export enum STAT_TYPE_BASE {
     ATTACK = 1,
     HEALTH_MAX = 2,
     HEALTH_CURRENT = 3,
-    LUCK = 4
+    LUCK = 4,
+    DEFENCE = 5,
 }
 
 export enum STAT_TYPE_ATTACK {
@@ -65,5 +66,24 @@ export interface IStat {
     icon: SpriteFrame
     value: BehaviorSubject<number>
 }
+
+export interface INegativeEffect {
+    category: STAT_CATEGORY,
+    type: number,
+    value: number
+
+    use(): void,
+    isCompleted(): void,
+}
+
+export interface IPositiveEffect {
+    category: STAT_CATEGORY,
+    type: number,
+    value: number,
+
+    use(): void,
+}
+
+
 
 

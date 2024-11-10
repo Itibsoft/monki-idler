@@ -1,9 +1,10 @@
-import {CharacterView} from "./character-view.ts";
-import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 import {Delegate} from "../../../utils/delegate.ts";
-import {Vec3, screen, tween} from "cc";
-import { CharacterModel } from "./character-model.ts";
-import {IStat, STAT_CATEGORY, STAT_TYPE_BASE } from "./stats.ts";
+import {CharacterModel} from "./character/character-model.ts";
+import {CharacterView} from "./character/character-view.ts";
+import {IStat, STAT_CATEGORY, STAT_TYPE_BASE} from "./stats/stats.ts";
+import {AsyncUtils} from "../../../utils/async-utils.ts";
+import {screen, tween} from "cc";
+
 
 export enum CHARACTER_ANIMATION_TYPE {
     IDLE = "idle_1",
@@ -73,7 +74,7 @@ export class CharacterViewModel {
 
         await this._view.playAnimationHalfDurationAsync(CHARACTER_ANIMATION_TYPE.HIT);
 
-        this._view.addHitInfo(damage);
+        this._view.addHitInfo(damage, "negative");
 
         if(!this._model.isAlive()) {
             await this._view.playAnimationAsync(CHARACTER_ANIMATION_TYPE.DEAD);
@@ -89,7 +90,7 @@ export class CharacterViewModel {
         this._model.updateTempStats();
     }
 
-    public async attackAsync(target: CharacterViewModel): Promise<void> {
+    public async attackAsync(target: CharacterViewModel, access_combo: boolean = true): Promise<void> {
         this._view.node.setSiblingIndex(this._view.node.getSiblingIndex() + 1);
 
         this._model.regenerateHP();
@@ -116,7 +117,11 @@ export class CharacterViewModel {
 
         this._view.playAnimation(CHARACTER_ANIMATION_TYPE.IDLE);
 
-        if(result.is_combo && target.isAlive()) {
+        if(true && access_combo) {
+            await target.attackAsync(this, false);
+        }
+
+        if(access_combo && result.is_combo && target.isAlive()) {
             await this.attackAsync(target);
         }
     }
@@ -127,6 +132,19 @@ export class CharacterViewModel {
 
     public idleAnimation(): void {
         this._view.playAnimation(CHARACTER_ANIMATION_TYPE.IDLE, true);
+    }
+
+    public async regenerateHPAsync(): Promise<void> {
+        let value = this._model.regenerateHP()
+
+        value = Math.round(value);
+
+        if(value > 0) {
+            this._view.addHitInfo(value, "positive");
+
+            await AsyncUtils.wait(0.5);
+        }
+
     }
 
     public release(): void {

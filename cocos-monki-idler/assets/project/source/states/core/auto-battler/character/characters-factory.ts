@@ -1,10 +1,10 @@
 import {CHARACTER_TYPE, CharacterModel} from "./character-model.ts";
-import {CharacterViewModel} from "./character-view-model.ts";
-import {IStat, IStatValueInfo} from "./stats.ts";
-import {StatsFactory} from "./stats-factory.ts";
-import {AssetsBundleManager, BUNDLES, IService, Services, ServiceType} from "../../../services";
+import {IStat, IStatValueInfo} from "../stats/stats.ts";
+import {StatsFactory} from "../stats/stats-factory.ts";
+import {AssetsBundleManager, BUNDLES, IService, Services, ServiceType} from "../../../../services";
 import {CharacterView} from "./character-view.ts";
-import {instantiate} from "cc";
+import {instantiate, Node} from "cc";
+import {CharacterViewModel} from "../character-view-model.ts";
 
 export class CharactersFactory implements IService {
     public readonly type: ServiceType = ServiceType.CHARACTERS_FACTORY;

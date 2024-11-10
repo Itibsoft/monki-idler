@@ -1,8 +1,8 @@
-import { Component, Label, Prefab, Widget, _decorator, instantiate, sp, Node, UITransform, tween, UIOpacity, Vec3} from "cc";
-import {CHARACTER_ANIMATION_TYPE, CharacterViewModel} from "./character-view-model.ts";
-import {AsyncUtils} from "../../../utils/async-utils.ts";
-import {CustomProgressBar} from "../../../utils/custom-progress-bar.ts";
-import {LocationObject} from "../location/location-object.ts";
+import {Label, Prefab, Widget, _decorator, instantiate, sp, Node, UITransform, tween, UIOpacity, Vec3, Color} from "cc";
+import {AsyncUtils} from "../../../../utils/async-utils.ts";
+import {CustomProgressBar} from "../../../../utils/custom-progress-bar.ts";
+import {LocationObject} from "../../location/location-object.ts";
+import {CHARACTER_ANIMATION_TYPE, CharacterViewModel} from "../character-view-model.ts";
 
 @_decorator.ccclass("CharacterView")
 export class CharacterView extends LocationObject {
@@ -58,12 +58,22 @@ export class CharacterView extends LocationObject {
         await AsyncUtils.wait(duration)
     }
 
-    public addHitInfo(hit: number): void {
+    public addHitInfo(hit: number, type: "positive" | "negative"): void {
         const instance = instantiate(this.hitPrefab);
         instance.setParent(this.messageBox);
 
         const label = instance.getComponent(Label)!;
-        label.string = `- ${hit}`;
+
+        switch (type) {
+            case "positive":
+                label.string = `+${hit}`;
+                label.color = new Color().fromHEX("#29FF00")
+                break;
+            case "negative":
+                label.string = `-${hit}`;
+                label.color = new Color().fromHEX("#FF0029")
+                break;
+        }
 
         const transform = this.messageBox.getComponent(UITransform)!;
         const width = transform.contentSize.width;

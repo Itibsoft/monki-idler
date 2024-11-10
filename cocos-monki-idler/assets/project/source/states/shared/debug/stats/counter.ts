@@ -17,11 +17,11 @@ export class Counter extends Component {
         this._value.on(this._onChangeValue);
 
         this.plusButton.node.on(Button.EventType.CLICK, () => {
-            this._value.next(this._value.value + 1);
+            this._value.next(this._value.value + 10);
         })
 
         this.minusButton.node.on(Button.EventType.CLICK, () => {
-            this._value.next(this._value.value - 1);
+            this._value.next(this._value.value - 10);
         })
     }
 
