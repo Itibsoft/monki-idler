@@ -4,6 +4,7 @@ import {LocationPanelController} from "./location-panel-controller.ts";
 import {CharacterModel} from "../auto-battler/character-model.ts";
 import {CharacterView} from "../auto-battler/character-view.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
+import {CharacterViewModel} from "../auto-battler/character-view-model.ts";
 
 export type LocationParameters = {
     hud_height: number,
@@ -41,11 +42,13 @@ export class Location {
         this._locationPanelController.open();
     }
 
-    public async setupCharacter(view: CharacterView): Promise<void> {
+    public async setupCharacter(character: CharacterViewModel): Promise<void> {
+        const view = character.getView();
         this._locationPanelController.setCharacterLeft(view);
     }
 
-    public async setupEnemy(view: CharacterView): Promise<void> {
+    public async setupEnemy(character: CharacterViewModel): Promise<void> {
+        const view = character.getView();
         this._locationPanelController.setCharacterRight(view);
     }
 }

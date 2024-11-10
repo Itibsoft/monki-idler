@@ -1,23 +1,23 @@
 import {APPLICATION_STATE_TYPE, ApplicationState} from "../../application/application-state.ts";
 import {HudPanelController} from "./hud/hud-panel-controller.ts";
-import {AssetsBundle, AssetsBundleManager, BUNDLES, PanelManager, Services, ServiceType} from "../../services";
+import {AssetsBundleManager, PanelManager, Services, ServiceType} from "../../services";
 import {Location} from "./location/location.ts";
-import {BehaviorSubject} from "../../utils/behaviour-subject.ts";
 import {INarrativeBlockBattle, NarrativeController} from "./narrative/narrative-controller.ts";
-import {CharacterModel, STAT_ATTACK_TYPE, STAT_BASE_TYPE, STAT_CATEGORY} from "./auto-battler/character-model.ts";
-import {instantiate} from "cc";
-import {CharacterView} from "./auto-battler/character-view.ts";
 import {AutoBattlerController} from "./auto-battler/auto-battler-controller.ts";
 import {CharacterViewModel} from "./auto-battler/character-view-model.ts";
 import {AsyncUtils} from "../../utils/async-utils.ts";
 import {GAME_RESULT_TYPE, GameResultPanelController} from "./game-result/game-result-panel-controller.ts";
 import {DebugPanelController} from "../shared/debug/debug-panel-controller.ts";
+import {IStatValueInfo, STAT_CATEGORY, STAT_TYPE_ATTACK, STAT_TYPE_BASE} from "./auto-battler/stats.ts";
+import {CharactersFactory} from "./auto-battler/characters-factory.ts";
+import { CHARACTER_TYPE } from "./auto-battler/character-model.ts";
 
 export class CoreApplicationState extends ApplicationState {
     public type: APPLICATION_STATE_TYPE = APPLICATION_STATE_TYPE.CORE;
 
     private readonly _panelManager: PanelManager;
     private readonly _assets: AssetsBundleManager;
+    private readonly _charactersFactory: CharactersFactory;
 
     private declare _hud: HudPanelController;
     private declare _gameResult: GameResultPanelController;
@@ -34,6 +34,7 @@ export class CoreApplicationState extends ApplicationState {
 
         this._panelManager = Services.get(ServiceType.PANEL_MANAGER);
         this._assets = Services.get(ServiceType.ASSET_BUNDLE_MANAGER);
+        this._charactersFactory = Services.get(ServiceType.CHARACTERS_FACTORY);
     }
 
     public async enterAsync(): Promise<void> {
@@ -97,47 +98,31 @@ export class CoreApplicationState extends ApplicationState {
     }
 
     private async createCharacterAsync(): Promise<void> {
-        const model = new CharacterModel([
+        const character_stats_info: IStatValueInfo[] = [
             {
                 category: STAT_CATEGORY.BASE,
-                type: STAT_BASE_TYPE.ATTACK,
-                name: "Атака",
-                description: "Наносимый персонажем урон",
+                type: STAT_TYPE_BASE.ATTACK,
                 value: 20
             },
             {
                 category: STAT_CATEGORY.BASE,
-                type: STAT_BASE_TYPE.HEALTH,
-                name: "Здоровье",
-                description: "Максимальное здоровье персонажа",
+                type: STAT_TYPE_BASE.HEALTH,
                 value: 100
             },
             {
                 category: STAT_CATEGORY.ATTACK,
-                type: STAT_ATTACK_TYPE.CRIT,
-                name: "Критический удар",
-                description: "С некоторой вероятностью наносит 200% урона, эта цифра также может быть улучшена",
+                type: STAT_TYPE_ATTACK.CRIT_ATTACK,
                 value: 10
             }
-        ]);
+        ];
 
-        const core_bundle = await this._assets.loadBundle(BUNDLES.CORE);
+        this._character = await this._charactersFactory.createAsync(CHARACTER_TYPE.KNIGHT, character_stats_info);
 
-        const character_prefab = await core_bundle!.loadPrefab("prefabs/characters/knight");
-
-        const instance = instantiate(character_prefab);
-
-        const view = instance.getComponent(CharacterView)!;
-
-        view.isMovable = false;
-
-        const view_model = new CharacterViewModel(model, view);
-
-        await this._location.setupCharacter(view);
-
-        this._character = view_model;
+        this._character.setMovableSceneFlow(false);
 
         this._character.onDead.add(this.onCharacterDead, this);
+
+        await this._location.setupCharacter(this._character);
 
         this._narrative.setupCharacter(this._character);
     }
@@ -159,27 +144,19 @@ export class CoreApplicationState extends ApplicationState {
             throw new Error("Not found main character");
         }
 
-        const bundle = await this._assets.loadBundle(info.enemy.bundle) as AssetsBundle;
-
-        const prefab = await bundle.loadPrefab(info.enemy.prefab);
-
-        const view = instantiate(prefab).getComponent(CharacterView)!;
-
-        const model = new CharacterModel(info.enemy.stats);
-
-        const enemy = new CharacterViewModel(model, view);
+        const enemy = await this._charactersFactory.createAsync(CHARACTER_TYPE.KNIGHT, info.enemy.stats);
 
         enemy.onDead.add((c) => {
             c.release();
         }, this);
 
-        await this._location.setupEnemy(view);
+        await this._location.setupEnemy(enemy);
 
         this._location.speed.next(1000);
 
         await AsyncUtils.wait(1);
 
-        view.isMovable = false;
+        enemy.setMovableSceneFlow(false);
 
         this._location.speed.next(350);
         this._location.isMove.next(false);

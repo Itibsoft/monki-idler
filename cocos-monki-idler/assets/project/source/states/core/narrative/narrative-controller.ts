@@ -2,23 +2,37 @@ import {BUNDLES} from "../../../services";
 import {NarrativeContainer} from "./narrative-container.ts";
 import {Button, Color, Sprite} from "cc";
 import {Location} from "../location/location.ts";
-import {STAT_ATTACK_TYPE, STAT_BASE_TYPE, STAT_CATEGORY} from "../auto-battler/character-model.ts";
 import {Delegate} from "../../../utils/delegate.ts";
 import {LocalStorage} from "../../../utils/local-storage.ts";
 import {CharacterViewModel} from "../auto-battler/character-view-model.ts";
+import {IStatValueInfo, STAT_CATEGORY, STAT_TYPE_BASE} from "../auto-battler/stats.ts";
+import { MUTATION_CATEGORY, MUTATION_TYPE } from "../auto-battler/mutations.ts";
 
 export enum REWARD_TYPE {
     CURRENCY,
-    STAT
+    STAT,
+    MUTATION
 }
 
 export interface IRewardInfo {
     type: REWARD_TYPE
 }
 
+export interface IRewardMutationInfo extends IRewardInfo {
+    mutation_category: MUTATION_CATEGORY,
+    mutation_type: MUTATION_TYPE,
+}
+
+export interface IRewardStatInfo extends IRewardInfo {
+    stat_category: STAT_CATEGORY,
+    stat_type: number,
+    value: number
+}
+
 export enum NARRATIVE_BLOCK_TYPE {
     INFO = "INFO",
-    BATTLE = "BATTLE"
+    BATTLE = "BATTLE",
+    YES_NO = "YES_NO"
 }
 
 export interface INarrativeBlockInfo {
@@ -31,18 +45,20 @@ export interface INarrativeBlockBattle extends INarrativeBlockInfo {
     enemy: IEnemyInfo
 }
 
+export interface INarrativeEventResult {
+    text: string,
+    rewards?: IRewardInfo[]
+}
+
+export interface INarrativeYesNo extends INarrativeBlockInfo {
+    positive: INarrativeEventResult,
+    negative: INarrativeEventResult
+}
+
 export interface IEnemyInfo {
     bundle: string,
     prefab: string,
-    stats: IStatInfo[]
-}
-
-export interface IStatInfo {
-    category: STAT_CATEGORY,
-    type: number,
-    name: string,
-    description: string,
-    value: number
+    stats: IStatValueInfo[]
 }
 
 export const NarrativeBlocks: INarrativeBlockInfo[] = [
@@ -64,16 +80,12 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
             stats: [
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_BASE_TYPE.ATTACK,
-                    name: "Атака",
-                    description: "Наносимый персонажем урон",
+                    type: STAT_TYPE_BASE.ATTACK,
                     value: 5
                 },
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_BASE_TYPE.HEALTH,
-                    name: "Здоровье",
-                    description: "Максимальное здоровье персонажа",
+                    type: STAT_TYPE_BASE.HEALTH,
                     value: 30
                 }
             ]
@@ -87,9 +99,31 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
     },
 
     {
-        type: NARRATIVE_BLOCK_TYPE.INFO,
-        text: "Лес становился темнее, и каждый шаг казался тяжелее. Воздух наполнялся странным ощущением, будто кто-то следил за вами."
-    },
+        type: NARRATIVE_BLOCK_TYPE.YES_NO,
+        text: "Среди кочек на чистом поле Монки увидел подозрительный грибочек. Может, бахнем?",
+        positive: {
+            text: "Монки съедает подозрительный гриб. После осознания вечного и бесконечного Монки осознает, что бить надо было по голове!",
+            rewards: []
+        },
+        negative: {
+            text: "Монки всю ночь дрался с пальмами.",
+            rewards: [
+                {
+                    type: REWARD_TYPE.STAT,
+                    stat_category: STAT_CATEGORY.BASE,
+                    stat_type: STAT_TYPE_BASE.HEALTH,
+                    value: -15
+                } as IRewardStatInfo
+            ]
+        },
+        rewards: [
+            {
+                type: REWARD_TYPE.MUTATION,
+                mutation_category: MUTATION_CATEGORY.INTELLECTUAL,
+                mutation_type: MUTATION_TYPE.INSIGHT
+            } as IRewardMutationInfo
+        ]
+    } as INarrativeYesNo,
 
     // Вторая битва (враги немного сильнее)
     {
@@ -105,16 +139,12 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
             stats: [
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_BASE_TYPE.ATTACK,
-                    name: "Атака",
-                    description: "Наносимый персонажем урон",
+                    type: STAT_TYPE_BASE.ATTACK,
                     value: 10
                 },
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_BASE_TYPE.HEALTH,
-                    name: "Здоровье",
-                    description: "Максимальное здоровье персонажа",
+                    type: STAT_TYPE_BASE.HEALTH,
                     value: 50
                 }
             ]
@@ -141,16 +171,12 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
             stats: [
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_BASE_TYPE.ATTACK,
-                    name: "Атака",
-                    description: "Наносимый персонажем урон",
+                    type: STAT_TYPE_BASE.ATTACK,
                     value: 15
                 },
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_BASE_TYPE.HEALTH,
-                    name: "Здоровье",
-                    description: "Максимальное здоровье персонажа",
+                    type: STAT_TYPE_BASE.HEALTH,
                     value: 80
                 }
             ]
@@ -188,16 +214,12 @@ export const NarrativeBlocks: INarrativeBlockInfo[] = [
             stats: [
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_BASE_TYPE.ATTACK,
-                    name: "Атака",
-                    description: "Наносимый персонажем урон",
+                    type: STAT_TYPE_BASE.ATTACK,
                     value: 20
                 },
                 {
                     category: STAT_CATEGORY.BASE,
-                    type: STAT_BASE_TYPE.HEALTH,
-                    name: "Здоровье",
-                    description: "Максимальное здоровье персонажа",
+                    type: STAT_TYPE_BASE.HEALTH,
                     value: 120
                 }
             ]
@@ -234,8 +256,8 @@ export class NarrativeController {
     private _location: Location;
     private _character: CharacterViewModel;
 
-    private readonly _nextHandler: () => void =  this.next.bind(this);
-    private readonly _battleHandler: () => void =  this.battle.bind(this);
+    private readonly _nextHandler: () => void = this.next.bind(this);
+    private readonly _battleHandler: () => void = this.battle.bind(this);
 
     public constructor(location: Location, container: NarrativeContainer) {
         this._location = location;
@@ -266,17 +288,17 @@ export class NarrativeController {
     public next(): void {
         this._location.isMove.next(true);
 
-        if(this._character.isAlive()) {
+        if (this._character.isAlive()) {
             this._character.moveAnimation();
         }
 
         this._index++;
 
-        if(this._index == NarrativeBlocks.length) {
+        if (this._index == NarrativeBlocks.length) {
             this._index = 0;
         }
 
-        if(this.getCurrentDay() > this.getMaxDay()) {
+        if (this.getCurrentDay() > this.getMaxDay()) {
             LocalStorage.setData<number>(MAX_DAY_COUNT_KEY, this._index);
         }
 
@@ -305,11 +327,11 @@ export class NarrativeController {
     }
 
     private async battle(): Promise<void> {
-        if(!this._currentBlock) {
+        if (!this._currentBlock) {
             throw new Error("Not found narrative block for battle");
         }
 
-        if(this._currentBlock.type !== NARRATIVE_BLOCK_TYPE.BATTLE) {
+        if (this._currentBlock.type !== NARRATIVE_BLOCK_TYPE.BATTLE) {
             throw new Error("Narrative block no correct for battle");
         }
 

@@ -2,7 +2,9 @@ export enum ServiceType {
     ASSET_BUNDLE_MANAGER = 0,
     PANEL_MANAGER = 1,
     LOGGER = 2,
-    LOADER = 3
+    LOADER = 3,
+    STATS_FACTORY = 4,
+    CHARACTERS_FACTORY = 5
 }
 
 export interface IService {

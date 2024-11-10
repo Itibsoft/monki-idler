@@ -1,8 +1,9 @@
-import {CharacterModel, IStat, STAT_BASE_TYPE, STAT_CATEGORY} from "./character-model.ts";
 import {CharacterView} from "./character-view.ts";
 import {BehaviorSubject} from "../../../utils/behaviour-subject.ts";
 import {Delegate} from "../../../utils/delegate.ts";
 import {Vec3, screen, tween} from "cc";
+import { CharacterModel } from "./character-model.ts";
+import {IStat, STAT_CATEGORY, STAT_TYPE_BASE } from "./stats.ts";
 
 export enum CHARACTER_ANIMATION_TYPE {
     IDLE = "idle_1",
@@ -25,15 +26,23 @@ export class CharacterViewModel {
 
         view.setup(this);
 
-        const health_stat =  this._model.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.HEALTH)!;
+        const health_stat =  this._model.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH)!;
 
-        const max_health = this.getStat(STAT_CATEGORY.BASE, STAT_BASE_TYPE.HEALTH)?.value ?? 0;
+        const max_health = this.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH)?.value ?? 0;
 
         this._view.healthBar.setTotalProgress(max_health);
 
         health_stat.on(health => {
             this._view.healthBar.setCurrentProgress(health);
         });
+    }
+
+    public getView(): CharacterView {
+        return this._view;
+    }
+
+    public setMovableSceneFlow(is_movable: boolean): void {
+        this._view.isMovable = is_movable;
     }
 
     public getStats(): IStat[] {

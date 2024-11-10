@@ -5,6 +5,9 @@ import {Loader} from "../loader";
 import {APPLICATION_STATE_TYPE, ApplicationState} from "./application-state.ts";
 import {CoreApplicationState} from "../states/core/core-application-state.ts";
 import {DebugPanelController} from "../states/shared/debug/debug-panel-controller.ts";
+import {StatsFactory} from "../states/core/auto-battler/stats-factory.ts";
+import {IStatMetaInfo, STAT_CATEGORY, STAT_TYPE_BASE} from "../states/core/auto-battler/stats.ts";
+import {CharactersFactory} from "../states/core/auto-battler/characters-factory.ts";
 
 type Task = () => Promise<void>;
 
@@ -48,6 +51,16 @@ export class Application {
             await loader.initializeAsync();
 
             loader.open();
+        });
+
+        tasks.set("create stats factory", async () => {
+            const stats_factory = new StatsFactory();
+
+            await stats_factory.initializeAsync();
+        });
+
+        tasks.set("create characters factory", async () => {
+            const characters_factory = new CharactersFactory();
         });
 
         tasks.set("create application states", async () => {
