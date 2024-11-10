@@ -26,8 +26,8 @@ export class CharacterViewModel {
 
         view.setup(this);
 
-        const health_max =  this._model.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH_MAX)!;
-        const health_current =  this._model.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH_CURRENT)!;
+        const health_max =  this._model.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH_MAX)!.value;
+        const health_current =  this._model.getStat(STAT_CATEGORY.BASE, STAT_TYPE_BASE.HEALTH_CURRENT)!.value;
 
         this._view.healthBar.setTotalProgress(health_max.value);
 
@@ -56,7 +56,7 @@ export class CharacterViewModel {
         return this._model.stats;
     }
 
-    public getStat(category: STAT_CATEGORY, type: number): BehaviorSubject<number> | undefined {
+    public getStat(category: STAT_CATEGORY, type: number): IStat | undefined {
         return this._model.getStat(category, type);
     }
 
@@ -85,6 +85,10 @@ export class CharacterViewModel {
         }
     }
 
+    public updateTempStats(): void {
+        this._model.updateTempStats();
+    }
+
     public async attackAsync(target: CharacterViewModel): Promise<void> {
         this._view.node.setSiblingIndex(this._view.node.getSiblingIndex() + 1);
 
@@ -111,6 +115,10 @@ export class CharacterViewModel {
         await this.animatePosition(50, 0.1);
 
         this._view.playAnimation(CHARACTER_ANIMATION_TYPE.IDLE);
+
+        if(result.is_combo && target.isAlive()) {
+            await this.attackAsync(target);
+        }
     }
 
     public moveAnimation(): void {

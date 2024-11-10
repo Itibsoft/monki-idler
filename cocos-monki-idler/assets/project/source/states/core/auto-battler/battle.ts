@@ -20,10 +20,12 @@ export class Battle {
 
     private async round(): Promise<void> {
         await AsyncUtils.wait(0.3);
+        this.characterA.updateTempStats();
         await this.characterA.attackAsync(this.characterB);
 
         if (this.characterB.isAlive()) {
             await AsyncUtils.wait(0.3);
+            this.characterB.updateTempStats();
             await this.characterB.attackAsync(this.characterA);
         }
     }

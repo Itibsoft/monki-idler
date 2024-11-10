@@ -118,6 +118,12 @@ export class CoreApplicationState extends ApplicationState {
                 category: STAT_CATEGORY.ATTACK,
                 type: STAT_TYPE_ATTACK.CRIT_ATTACK,
                 value: 10
+            },
+
+            {
+                category: STAT_CATEGORY.ATTACK,
+                type: STAT_TYPE_ATTACK.COMBO_ATTACK,
+                value: 100
             }
         ];
 
